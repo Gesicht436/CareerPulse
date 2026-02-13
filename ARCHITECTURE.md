@@ -20,7 +20,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.2 Web Interface (`web_interface/`)
 
-**Primary:** **Member 3** | **Support:** **Member 4**
+**Primary:** **Abhinav 285** | **Support:** **Harsh**
 
 - **Tech Stack:** Next.js (App Router), TypeScript, Tailwind CSS, Lucide React, Shadcn/UI.
 - **Responsibilities:**
@@ -30,7 +30,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.3 Data Pipeline (`data_pipeline/`)
 
-**Owner:** **Member 2**
+**Owner:** **Abhinav 08**
 
 - **Tech Stack:** Python, BeautifulSoup4, Pandas.
 - **Responsibilities:**
@@ -40,7 +40,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.4 Quality Assurance (`quality_assurance/`)
 
-**Owner:** **Member 4**
+**Owner:** **Ankit**
 
 - **Tech Stack:** Pytest, Playwright (UI testing), Postman.
 - **Responsibilities:**
@@ -50,7 +50,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.5 Project Assets (`project_assets/`)
 
-**Owner:** **Member 2**
+**Owner:** **Ankit**
 
 - **Responsibilities:**
 - **Reporting:** Maintaining the Mid-sem and End-sem reports (Markdown/LaTeX).
@@ -88,7 +88,7 @@ To maintain code integrity, we will follow a strict **Feature Branch** workflow.
 
 ---
 
-## 4. Immediate Milestones (Deadline: March 30)
+## 4. Immediate Milestones (Deadline: May 10, 2026)
 
 1. **Week 1:** Repo setup & Environment Config (Docker).
 2. **Week 2:** Baseline Resume Parsing & Next.js UI Shell.

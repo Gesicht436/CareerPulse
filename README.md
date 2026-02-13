@@ -42,7 +42,7 @@ C:\Users\mayan\coding\projects\CareerPulse
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 
@@ -80,7 +80,7 @@ Alternatively, for development:
 
 ---
 
-## 🤝 Contribution Guidelines
+## Contribution Guidelines
 
 We use a strict **Feature Branch** workflow.
 
