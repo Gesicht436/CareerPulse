@@ -8,31 +8,31 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.1 Core Engine (`core_engine/`)
 
-**Owner:** **Mayank Anand (Team Lead)**
+**Mayank Anand (Team Lead)** |
 
-- **Tech Stack:** FastAPI (Async), Pydantic v2, spaCy, Sentence-Transformers, ChromaDB.
+- **Tech Stack:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, OAuth2 + JWT, Passlib, SlowAPI, Spacy, pdfplumber, regex + unicode normalization.
 - **Responsibilities:**
 - **API Gateway:** Secure REST endpoints, JWT authentication (if needed), and rate limiting.
 - **Adversarial AI Defense:** Modules to detect "Resume Smuggling" (hidden text, zero-width chars, prompt injection).
 - **Privacy Engine:** Client-side-first logic for PII redaction (Name, Email, Phone) before storage.
 - **Smart Match Engine:** RAG-based semantic similarity between Resumes and JDs.
-- **Data Layer:** PostgreSQL (via SQLModel) for user profiles and FAISS/ChromaDB for vector embeddings.
+- **Data Layer:** Database for user profiles and vector embeddings.
 
 ### 1.2 Web Interface (`web_interface/`)
 
-**Primary:** **Abhinav 285** | **Support:** **Harsh**
+**Abhinav 285** | **Harsh** |
 
-- **Tech Stack:** Next.js (App Router), TypeScript, Tailwind CSS, Lucide React, Shadcn/UI.
+- **Tech Stack:** NextJS, Typescript, Tailwind CSS, Zustand(state management), React Hook Form + Zod, Recharts or ECharts.
 - **Responsibilities:**
-- **Member 3 (Lead UI):** Component architecture, state management (Zustand/Context), and file upload logic.
-- **Member 4 (Support):** Data visualization (D3.js or Recharts) for "Career Readiness" scores and skill-gap heatmaps.
+- **Abhinav 285:** Component architecture, state management, and file upload logic.
+- **Harsh:** Data visualization for "Career Readiness" scores and skill-gap heatmaps.
 - **Integration:** Connecting the frontend hooks to the `core_engine` API.
 
 ### 1.3 Data Pipeline (`data_pipeline/`)
 
-**Owner:** **Abhinav 08**
+**Mayank** | **Ankit**
 
-- **Tech Stack:** Python, BeautifulSoup4, Pandas.
+- **Tech Stack:** Scrapy, Pandas, spaCy, NLTK, Prefect, PostgresSQL + Qdrant.
 - **Responsibilities:**
 - **Scraping:** Gathering Job Descriptions and Resume datasets (Kaggle/Indeed).
 - **Preprocessing:** Cleaning raw text, removing stop words, and formatting for spaCy entity recognition.
@@ -40,9 +40,9 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.4 Quality Assurance (`quality_assurance/`)
 
-**Owner:** **Ankit**
+**Abhinav 08** |
 
-- **Tech Stack:** Pytest, Playwright (UI testing), Postman.
+- **Tech Stack:** Pytest, pytest-cov, Hypothesis, Postman + Newman, Atheris, Locust.
 - **Responsibilities:**
 - **Security Testing:** Crafting "adversarial" resumes to try and bypass Mayank's security logic.
 - **Performance:** Benchmarking the latency of the embedding generation.
@@ -50,7 +50,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 ### 1.5 Project Assets (`project_assets/`)
 
-**Owner:** **Ankit**
+**Mayank** | **Harsh** | **Ankit** | **Abhinav 08** | **Abhinav 285** |
 
 - **Responsibilities:**
 - **Reporting:** Maintaining the Mid-sem and End-sem reports (Markdown/LaTeX).
@@ -85,12 +85,3 @@ To maintain code integrity, we will follow a strict **Feature Branch** workflow.
 - **Frontend -> Backend:** All communication happens via the `/api/v1` prefix.
 - **Backend -> Security:** The security module is a middleware that intercepts uploads.
 - **Data Pipeline -> Core Engine:** Member 2 will provide `.jsonl` or `.csv` files that Mayank will ingest into the database/vector store.
-
----
-
-## 4. Immediate Milestones (Deadline: May 10, 2026)
-
-1. **Week 1:** Repo setup & Environment Config (Docker).
-2. **Week 2:** Baseline Resume Parsing & Next.js UI Shell.
-3. **Week 3:** Adversarial Detection Logic & Skill Gap Visualization.
-4. **Week 4:** Integration testing & Report submission.

@@ -1,0 +1,17 @@
+[project]
+name = "careerpulse"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.129.0",
+    "ipython>=9.10.0",
+    "numpy>=2.4.2",
+    "pandas>=3.0.1",
+    "prefect>=3.6.18",
+    "pytest>=9.0.2",
+    "scrapy>=2.14.1",
+    "spacy>=3.8.11",
+    "sympy>=1.14.0",
+]

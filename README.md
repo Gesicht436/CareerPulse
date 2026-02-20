@@ -18,11 +18,11 @@ Built for the Capstone Project at IIT Patna (2026).
 
 ## The Tech Stack
 
-- **Frontend:** Next.js (TypeScript) + Tailwind CSS + Lucide React.
-- **Backend:** FastAPI (Python) - Async, Pydantic v2.
-- **Database:** PostgreSQL (User data) + ChromaDB/FAISS (Vector Embeddings).
-- **AI/ML:** LangChain, spaCy, HuggingFace Transformers.
-- **Infrastructure:** Dockerized Containers.
+- **Frontend:** NextJS, Typescript, Tailwind CSS, Zustand(state management), React Hook Form + Zod, Recharts or ECharts.
+- **Backend:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, OAuth2 + JWT, Passlib, SlowAPI, Spacy, pdfplumber, regex + unicode normalization.
+- **Database:** PostgresSQL + Qdrant.
+- **AI/ML:** Local Generative AI models like Qwen3 8B, GPTOSS, etc.
+- **Infrastructure:** Docker containers
 
 ---
 
@@ -32,11 +32,11 @@ The project is divided into 5 independent modules to ensure scalability and clea
 
 ```text
 C:\Users\mayan\coding\projects\CareerPulse
-├── core_engine/        # [MAYANK] API, Security Logic, RAG, & DB Models
-├── web_interface/      # [MEMBERS 3 & 4] Next.js Frontend & Visualizations
-├── data_pipeline/      # [MEMBER 2] Scraping & Preprocessing scripts
-├── quality_assurance/  # [MEMBER 4] Security Benchmarks & Testing
-├── project_assets/     # [MEMBER 2] Reports & Documentation
+├── core_engine/        # Mayank - API, Security Logic, RAG, & DB Models
+├── web_interface/      # Harsh & Abhinav 285 - Frontend & Visualizations
+├── data_pipeline/      # Ankit - Scraping & Preprocessing scripts
+├── quality_assurance/  # Abhinav 08 - Security Benchmarks & Testing
+├── project_assets/     # Each member - Reports & Documentation
 └── ARCHITECTURE.md     # Detailed Technical Specs & Git Workflow
 ```
 
@@ -47,14 +47,14 @@ C:\Users\mayan\coding\projects\CareerPulse
 ### 1. Prerequisites
 
 - Docker & Docker Compose
-- Python 3.10+
-- Node.js 18+
+- Python
+- Node.js
 
 ### 2. Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/CareerPulse.git
+git clone https://github.com/Gesicht436/CareerPulse.git 
 cd CareerPulse
 
 # Setup Backend (Core Engine)
@@ -74,9 +74,6 @@ The easiest way is to use Docker:
 ```bash
 docker-compose up --build
 ```
-Alternatively, for development:
-- **Backend:** `uvicorn main:app --reload` (inside `core_engine`)
-- **Frontend:** `npm run dev` (inside `web_interface`)
 
 ---
 

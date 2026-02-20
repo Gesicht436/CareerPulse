@@ -1,25 +1,31 @@
-# Data Layer Module
+# Data Layer (`core_engine/data_layer/`)
 
-## Overview
+Responsible for the persistence of both structured relational data and high-dimensional vector embeddings.
 
-Handles all data persistence, database schemas, and data access patterns.
+---
 
-## Responsibilities
+## 1. Technical Stack
 
-- **Schema Definition:** SQLAlchemy / SQLModel classes for Users, Resumes, Jobs.
-- **Migrations:** Alembic scripts to manage DB state.
-- **Data Access:** Helper functions to save/load data.
-- **Validation:** Pydantic models shared across the application.
+- **Relational DB:** PostgreSQL (User profiles, history, job metadata).
+- **Vector DB:** Qdrant (Resume/JD embeddings for semantic search).
+- **ORM:** SQLAlchemy or Tortoise ORM.
 
-## Key Components
+---
 
-- `models.py`: Database tables.
-- `schemas.py`: Pydantic data transfer objects.
-- `db.py`: Database connection logic.
+## 2. Key Responsibilities
 
-## Dependencies
+### **Mayank Anand**
 
-- SQLAlchemy / SQLModel
-- Pydantic
-- Alembic
-- PostgreSQL Driver (psycopg2)
+- **Schema Design:** Creating robust migrations for relational user data.
+- **Vector Indexing:** Optimizing Qdrant collections for fast semantic retrieval.
+- **Data Integrity:** Ensuring consistency between the primary database and the vector store.
+- **Backup & Recovery:** Implementing automated database snapshotting.
+
+---
+
+## 3. Key Feature Requirements
+
+1. **Hybrid Search:** Capability to filter by structured metadata (e.g., location, date) while performing semantic vector search.
+2. **Automated Migrations:** Using Alembic or similar tools to ensure database schema changes are tracked and reversible.
+3. **Optimized Indexing:** Custom HNSW (Hierarchical Navigable Small World) configurations in Qdrant for high-accuracy matching.
+4. **Transaction Safety:** Ensuring that resume metadata and its corresponding embeddings are updated atomically.
