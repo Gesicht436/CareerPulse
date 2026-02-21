@@ -1,0 +1,35 @@
+# CareerPulse Infrastructure Blueprint
+# Run with: docker-compose up -d
+
+services:
+  # --- RELATIONAL DATABASE (PostgreSQL) ---
+  # Stores user profiles, authentication data, and job metadata.
+  db:
+    image: postgres:16-alpine
+    container_name: careerpulse_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: careerpulse
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # --- VECTOR DATABASE (Qdrant) ---
+  # Stores and searches through resume/JD embeddings for semantic matching.
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: careerpulse_vector
+    restart: always
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+# Named volumes ensure your data survives even if containers are deleted/restarted.
+volumes:
+  pgdata:
+  qdrant_data:
