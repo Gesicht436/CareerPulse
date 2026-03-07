@@ -13,6 +13,7 @@ dependencies = [
     "hypothesis>=6.151.9",
     "ipython>=9.10.0",
     "jupyter>=1.1.1",
+    "kaggle>=2.0.0",
     "locust>=2.43.3",
     "matplotlib>=3.10.8",
     "nltk>=3.9.3",
@@ -35,3 +36,6 @@ dependencies = [
     "uvicorn>=0.41.0",
     "zod>=0.8.0",
 ]
+
+[project.scripts]
+download-data = "scripts.setup_data:download_data"
