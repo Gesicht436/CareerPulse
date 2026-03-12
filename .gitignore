@@ -9,6 +9,13 @@ wheels/
 # Virtual environments
 .venv
 
+# Environment variables
+.env
+
+# Data
+**/raw/
+**/processed/
+
 # Misc
 GEMINI.md
 

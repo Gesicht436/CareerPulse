@@ -46,26 +46,47 @@ C:\Users\mayan\coding\projects\CareerPulse
 
 ### 1. Prerequisites
 
+- [uv](https://docs.astral.sh/uv/) (Modern Python package manager)
 - Docker & Docker Compose
 - Python
 - Node.js
 
-### 2. Installation
+### 2. Environment Setup
 
 ```bash
 # Clone the repository
 git clone https://github.com/Gesicht436/CareerPulse.git 
 cd CareerPulse
 
-# Setup Backend (Core Engine)
-cd core_engine
-python -m venv venv
-source venv/bin/activate # or venv\Scripts\activate on Windows
-pip install -r requirements.txt
+# 1. Sync dependencies (Automatically creates .venv)
+uv sync
 
-# Setup Frontend (Web Interface)
+# 2. Setup Kaggle API Token
+# Rename .env.example to .env and paste your token
+# Get your token from https://www.kaggle.com/settings (API section)
+cp .env.example .env
+
+# 3. Download Project Datasets
+# This command automatically fetches the required Kaggle datasets
+uv run download-data
+```
+
+### 3. Module Specific Setup
+
+#### Backend (Core Engine)
+
+```bash
+cd core_engine
+# (uv already handled dependencies in the root)
+uv run uvicorn main:app --reload
+```
+
+#### Frontend (Web Interface)
+
+```bash
 cd ../web_interface
 npm install
+npm run dev
 ```
 
 ### 3. Running the Project
