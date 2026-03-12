@@ -12,7 +12,23 @@ Responsible for the persistence of both structured relational data and high-dime
 
 ---
 
-## 2. Key Responsibilities
+## 2. Data Ingestion & Raw Datasets
+
+To populate the engine with job descriptions for matching, we ingest raw data from Kaggle.
+
+### **Fetch Raw Data:**
+
+Ensure your `KAGGLE_API_TOKEN` is set in the root `.env` file, then run:
+```bash
+# Run from project root
+uv run python scripts/setup_data.py
+```
+The data will be downloaded and unzipped into:
+- `core_engine/data_layer/raw/`
+
+---
+
+## 3. Key Responsibilities
 
 ### **Mayank Anand**
 
