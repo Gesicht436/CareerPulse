@@ -19,10 +19,9 @@ Built for the Capstone Project at IIT Patna (2026).
 ## The Tech Stack
 
 - **Frontend:** NextJS, Typescript, Tailwind CSS, Zustand(state management), React Hook Form + Zod, Recharts or ECharts.
-- **Backend:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, OAuth2 + JWT, Passlib, SlowAPI, Spacy, pdfplumber, regex + unicode normalization.
-- **Database:** PostgresSQL + Qdrant.
-- **AI/ML:** Local Generative AI models like Qwen3 8B, GPTOSS, etc.
-- **Infrastructure:** Docker containers
+- **Backend:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, OAuth2 + JWT, Passlib, SlowAPI, pdfplumber, regex + unicode normalization.
+- **AI/ML:** Sentence-Transformers (`all-MiniLM-L6-v2`), Qdrant (Vector DB), Local LLMs (Qwen3 8B, GPTOSS), spaCy (Entity Recognition).
+- **Infrastructure:** Docker containers, `uv` (Package Management).
 
 ---
 

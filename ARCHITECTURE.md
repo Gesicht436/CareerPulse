@@ -10,7 +10,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 **Mayank Anand (Team Lead)** |
 
-- **Tech Stack:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, OAuth2 + JWT, Passlib, SlowAPI, Spacy, pdfplumber, regex + unicode normalization.
+- **Tech Stack:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, Sentence-Transformers, Qdrant-client, OAuth2 + JWT, Passlib, SlowAPI, Spacy, pdfplumber, regex + unicode normalization.
 - **Responsibilities:**
 - **API Gateway:** Secure REST endpoints, JWT authentication (if needed), and rate limiting.
 - **Adversarial AI Defense:** Modules to detect "Resume Smuggling" (hidden text, zero-width chars, prompt injection).
@@ -42,7 +42,7 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 **Abhinav 08** |
 
-- **Tech Stack:** Pytest, pytest-cov, Hypothesis, Postman + Newman, Atheris, Locust.
+- **Tech Stack:** Pytest, pytest-asyncio, httpx, pytest-cov, Hypothesis, Postman + Newman, Atheris, Locust.
 - **Responsibilities:**
 - **Security Testing:** Crafting "adversarial" resumes to try and bypass Mayank's security logic.
 - **Performance:** Benchmarking the latency of the embedding generation.
