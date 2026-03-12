@@ -61,13 +61,15 @@ cd CareerPulse
 uv sync
 
 # 2. Setup Kaggle API Token
-# Rename .env.example to .env and paste your token
-# Get your token from https://www.kaggle.com/settings (API section)
-cp .env.example .env
+# a. Go to https://www.kaggle.com/settings -> API Section -> Create New API Token.
+# b. This downloads 'kaggle.json'. Open it to find your 'username' and 'key'.
+# c. Rename .env.example to .env:
+# d. Edit .env and set KAGGLE_API_TOKEN using the format "username:key":
+# KAGGLE_API_TOKEN="your_username:your_api_key_here"
 
 # 3. Download Project Datasets
-# This command automatically fetches the required Kaggle datasets
-uv run download-data
+# This script automatically fetches and unzips datasets into the correct folders
+uv run python scripts/setup_data.py
 ```
 
 ### 3. Module Specific Setup

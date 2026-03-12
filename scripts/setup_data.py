@@ -2,6 +2,10 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file automatically
+load_dotenv()
 
 # Configuration: (Dataset Ref, Target Path)
 DATASETS = [
