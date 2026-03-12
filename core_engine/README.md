@@ -9,9 +9,12 @@ The **Core Engine** is the central nervous system of CareerPulse. It handles the
 - **Framework:** FastAPI
 - **Server:** Uvicorn + Gunicorn
 - **Validation:** Pydantic v2
-- **Auth:** OAuth2 + JWT (Passlib)
-- **Security:** SlowAPI (Rate Limiting)
-- **NLP:** spaCy, pdfplumber, regex + unicode normalization
+- **NLP & AI:**
+  - **Sentence-Transformers:** For semantic vector embeddings (`all-MiniLM-L6-v2`).
+  - **Qdrant:** Vector database for RAG (Retrieval-Augmented Generation).
+  - **pdfplumber:** Deep inspection of PDF structures.
+- **Security:** SlowAPI (Rate Limiting), Regex + Unicode Normalization.
+- **Dependency Management:** `uv` (Fast, efficient Python package manager).
 
 ---
 
@@ -44,10 +47,15 @@ The **Core Engine** is the central nervous system of CareerPulse. It handles the
 
 ## 5. Development Setup
 
+We use `uv` for lightning-fast dependency management.
+
 ```bash
+# Sync dependencies
+uv sync
+
+# Run the API server with auto-reload
 cd core_engine
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --reload
+uv run uvicorn main:app --reload
 ```
+
+The API will be available at `http://localhost:8000`. You can access the interactive Swagger documentation at `http://localhost:8000/docs`.
