@@ -1,4 +1,5 @@
 import { FileUploadZone } from "./FileUploadZone";
+import { JobMatchList } from "./JobMatchList";
 import { ShieldCheck, Lock, EyeOff } from "lucide-react";
 
 export default function UploadPage() {
@@ -13,7 +14,10 @@ export default function UploadPage() {
         </p>
       </div>
 
-      <FileUploadZone />
+      <div className="space-y-12">
+        <FileUploadZone />
+        <JobMatchList />
+      </div>
 
       <div className="grid gap-8 sm:grid-cols-3 max-w-4xl mx-auto pt-12 border-t">
         <div className="flex flex-col items-center text-center space-y-2">

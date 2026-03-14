@@ -10,18 +10,19 @@ import { toast } from "sonner";
 export const FileUploadZone = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const { file, setFile, setAnalysisResult } = useResumeStore();
+  const { file, setFile, setAnalysisResult, setMatchResults } = useResumeStore();
 
   const uploadResume = async () => {
     if (!file) return;
 
     setIsUploading(true);
-    toast.info("Analyzing resume for security and PII...");
+    toast.info("Step 1: Analyzing resume for security and PII...");
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
+      // 1. Security Analysis
       const response = await fetch("http://127.0.0.1:8000/api/v1/security/upload", {
         method: "POST",
         body: formData,
@@ -37,7 +38,21 @@ export const FileUploadZone = () => {
       
       if (result.security_report.is_safe) {
         toast.success("Resume analyzed and secure!");
-        // We can redirect or update UI here
+        
+        // 2. Profile Matching (using redacted text)
+        toast.info("Step 2: Matching your profile with opportunities...");
+        const matchResponse = await fetch(`http://127.0.0.1:8000/api/v1/smart-match/match-all?resume_text=${encodeURIComponent(result.redacted_text)}&limit=5`, {
+          method: "POST",
+        });
+
+        if (!matchResponse.ok) {
+          const errorData = await matchResponse.json().catch(() => ({}));
+          throw new Error(errorData.detail || "Failed to fetch job matches. Please ensure Qdrant is running.");
+        }
+
+        const matchData = await matchResponse.json();
+        setMatchResults(matchData);
+        toast.success("Match analysis complete!");
       } else {
         const criticalFlags = result.security_report.flags.filter((f: any) => f.severity === 'critical' || f.severity === 'high');
         if (criticalFlags.length > 0) {
@@ -46,9 +61,9 @@ export const FileUploadZone = () => {
           toast.warning("Analysis complete with some minor warnings.");
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload error:", error);
-      toast.error("An error occurred during upload. Please try again.");
+      toast.error(error.message || "An error occurred during upload. Please try again.");
     } finally {
       setIsUploading(false);
     }
@@ -116,7 +131,9 @@ export const FileUploadZone = () => {
               <div className="text-left">
                 <p className="font-medium truncate max-w-[200px]">{file.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                  {file.size < 1024 * 1024 
+                    ? `${(file.size / 1024).toFixed(2)} KB` 
+                    : `${(file.size / 1024 / 1024).toFixed(2)} MB`}
                 </p>
               </div>
             </div>
@@ -134,9 +151,9 @@ export const FileUploadZone = () => {
 
       {file && (
         <div className="flex flex-col gap-4 items-center">
-          <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-200">
+          <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-3 rounded-md border border-blue-200">
             <ShieldAlert className="h-4 w-4" />
-            <span>CareerPulse will redact PII (Name, Email, Phone) locally before analysis.</span>
+            <span>Privacy Mode: PII (Name, Email, Phone) will be redacted to ensure your data is secure.</span>
           </div>
           <Button 
             size="lg" 

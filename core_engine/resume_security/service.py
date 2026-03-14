@@ -31,12 +31,14 @@ class SecurityService:
         
         # 2. PII Validation
         pii_entities = self._detect_pii(text)
+        redacted_text = text
         if pii_entities:
             print(f"DEBUG: PII Entities detected: {len(pii_entities)}")
+            redacted_text = self._redact_pii(text, pii_entities)
             security_flags.append({
                 "type": "PII_DETECTED",
-                "detail": f"Unredacted PII found: {', '.join(list(set([e[1] for e in pii_entities]))[:3])}",
-                "severity": "high"
+                "detail": f"PII detected and redacted: {', '.join(list(set([e[1] for e in pii_entities]))[:3])}",
+                "severity": "medium" # Lowered from high because we are redacting it now
             })
 
         # 3. Prompt Injection Check
@@ -51,11 +53,25 @@ class SecurityService:
 
         return {
             "text": text,
+            "redacted_text": redacted_text,
             "security_report": {
                 "is_safe": not any(f["severity"] in ["high", "critical"] for f in security_flags),
                 "flags": security_flags
             }
         }
+
+    def _redact_pii(self, text: str, entities: List[Tuple[str, str]]) -> str:
+        """
+        Replaces detected PII entities with their labels to protect privacy.
+        """
+        # Sort entities by length descending to avoid partial replacements
+        sorted_entities = sorted(entities, key=lambda x: len(x[0]), reverse=True)
+        redacted = text
+        for ent_text, ent_label in sorted_entities:
+            # Simple replacement for now. In a production system, we'd use 
+            # more sophisticated masking to avoid breaking context.
+            redacted = redacted.replace(ent_text, f"[{ent_label}]")
+        return redacted
 
     def _extract_text_and_check_hidden(self, content: bytes) -> Tuple[str, List[Dict]]:
         flags = []
