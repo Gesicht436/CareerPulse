@@ -1,46 +1,38 @@
 # Web Interface (`web_interface/`)
 
-The **CareerPulse Web Interface** is a modern, high-performance frontend designed to provide job seekers with an intuitive and secure environment to analyze their resumes against market standards.
+The **CareerPulse Web Interface** is a modern, high-performance frontend built with Next.js 15+ and Tailwind CSS v4. It focuses on a "Security-First" UI/UX for secure resume analysis.
 
 ---
 
 ## 1. Technical Stack
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS + shadcn/ui
+- **Framework:** Next.js 15+ (App Router)
+- **Styling:** Tailwind CSS v4 + shadcn/ui
 - **State Management:** Zustand
-- **Form Handling:** React Hook Form + Zod (Validation)
-- **Data Visualization:** Recharts / ECharts
-- **HTTP Client:** Axios / TanStack Query (React Query)
+- **Icons:** Lucide-React
+- **Notifications:** Sonner
 
 ---
 
-## 2. Work Distribution
+## 2. Architecture: Atomic Design
 
-### **Abhinav 285 (Lead Developer)**
+We follow an **Atomic Design** structure to ensure scalability and reusability:
 
-- **Component Architecture:** Setting up the atomic design structure, layout, and reusable UI components.
-- **State Management:** Implementing global state using Zustand for user sessions and application-wide settings.
-- **Secure File Upload:** Implementation of the drag-and-drop resume upload system.
-- **Client-Side Privacy:** Integrating logic for PII (Personally Identifiable Information) redaction *before* the file is transmitted to the server.
-- **API Integration:** Establishing robust hooks to communicate with the `core_engine` REST endpoints.
-
-### **Harsh (Data Visualization Specialist)**
-
-- **Career Readiness Dashboard:** Building interactive charts to display match percentages and skill rankings.
-- **Skill-Gap Heatmaps:** Developing visual representations of missing competencies and industry demand.
-- **User Experience (UX):** Ensuring the interface is responsive, accessible, and follows a "Security-First" aesthetic.
-- **Reporting Interface:** Designing the UI for "Explainable AI" feedback, providing users with actionable learning paths.
+- **Atoms:** Basic UI components from shadcn (Button, Input, Card).
+- **Molecules:** Composite components (e.g., `FileUploadZone`).
+- **Organisms:** Complex UI blocks (e.g., `Navbar`).
+- **Templates:** Layout structures for different page types.
+- **Pages:** The actual Next.js routes (`/`, `/upload`, `/dashboard`).
 
 ---
 
-## 3. Key Feature Requirements
+## 3. Key Progress
 
-1. **Zero-Trust Uploads:** Visual indicators confirming that PII has been redacted locally before upload.
-2. **Adversarial Feedback:** UI notifications that inform the user if "Resume Smuggling" or prompt injection attempts were detected during processing.
-3. **Real-time Analysis:** Progressive loading states while the RAG engine processes the resume against Job Descriptions.
-4. **Interactive Career Pathing:** A roadmap visualization based on the skill-gap analysis.
+- [x] **Project Scaffolding:** Initialized with Next.js, TS, and Tailwind v4.
+- [x] **Atomic Structure:** Created directories for molecules, organisms, hooks, and stores.
+- [x] **Global State:** Implemented `useResumeStore` and `useUIStore` with Zustand.
+- [x] **Secure Upload:** Built the `FileUploadZone` molecule with real-time feedback.
+- [x] **Responsive Design:** Centered and balanced layout for home, upload, and dashboard pages.
 
 ---
 
@@ -57,4 +49,12 @@ npm install
 npm run dev
 ```
 
-*Refer to the root [ARCHITECTURE.md](../ARCHITECTURE.md) for global project standards and Git workflows.*
+The frontend will be available at `http://localhost:3000`.
+
+---
+
+## 5. Roadmap
+
+1. **Client-Side Redaction:** Implement regex-based PII redaction before file upload.
+2. **Analysis Dashboard:** Integrate interactive charts (Recharts) for match results.
+3. **Real-time Feedback:** Show progressive analysis steps from the backend.

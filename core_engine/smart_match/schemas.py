@@ -17,3 +17,13 @@ class SmartMatchResponse(BaseModel):
     matched_skills: List[str] = Field(..., description="Skills from the JD that were found in the resume.")
     missing_skills: List[str] = Field(..., description="Key skills from the JD that are missing in the resume.")
     recommendations: List[str] = Field(..., description="Top 3 actionable steps to improve the matching score.")
+
+class JobMatchResult(BaseModel):
+    job_id: str
+    job_title: str
+    company: str
+    match_details: SmartMatchResponse
+
+class MultiJobMatchResponse(BaseModel):
+    resume_id: Optional[str] = None
+    top_matches: List[JobMatchResult]
