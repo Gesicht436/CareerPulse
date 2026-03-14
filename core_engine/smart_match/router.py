@@ -1,8 +1,22 @@
 from fastapi import APIRouter, HTTPException
-from core_engine.smart_match.schemas import SmartMatchRequest, SmartMatchResponse
+from core_engine.smart_match.schemas import SmartMatchRequest, SmartMatchResponse, MultiJobMatchResponse
 from core_engine.smart_match.service import smart_match_service
 
 router = APIRouter()
+
+@router.post("/match-all", response_model=MultiJobMatchResponse)
+async def match_resume_to_all_jobs(resume_text: str, limit: int = 5):
+    """
+    Takes a resume text and finds the most relevant jobs from the Qdrant database,
+    providing a detailed match report for each.
+    """
+    try:
+        results = await smart_match_service.match_against_database(resume_text, limit=limit)
+        return results
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/match", response_model=SmartMatchResponse)
 async def match_resume_to_jd(request: SmartMatchRequest):

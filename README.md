@@ -18,10 +18,24 @@ Built for the Capstone Project at IIT Patna (2026).
 
 ## The Tech Stack
 
-- **Frontend:** NextJS, Typescript, Tailwind CSS, Zustand(state management), React Hook Form + Zod, Recharts or ECharts.
-- **Backend:** FastAPI, Uvicorn + Gunicorn, Pydantic v2, OAuth2 + JWT, Passlib, SlowAPI, pdfplumber, regex + unicode normalization.
-- **AI/ML:** Sentence-Transformers (`all-MiniLM-L6-v2`), Qdrant (Vector DB), Local LLMs (Qwen3 8B, GPTOSS), spaCy (Entity Recognition).
-- **Infrastructure:** Docker containers, `uv` (Package Management).
+- **Frontend:** Next.js 15+ (App Router), TypeScript, Tailwind CSS v4, shadcn/ui, Zustand.
+- **Backend:** FastAPI, Python 3.12 (managed via `uv`), Pydantic v2, pdfplumber, spaCy.
+- **AI/ML:** Sentence-Transformers (`all-MiniLM-L6-v2`), Qdrant (Vector DB), en_core_web_sm (spaCy model).
+- **Infrastructure:** Docker & Docker Compose, `uv` (Package Management).
+
+---
+
+## Current Progress
+
+### Phase 1: Foundation, Security & Smart Match (In Progress)
+
+- [x] **Frontend Initialization:** Next.js project setup with Atomic Architecture.
+- [x] **UI/UX:** Responsive landing page, secure upload zone, and dashboard placeholder.
+- [x] **Backend Security:** Implementation of `Resume Security` module (PII detection, hidden text check).
+- [x] **Integration:** Frontend-to-Backend file upload pipeline established.
+- [x] **Smart Match (RAG):** Full integration with Qdrant Vector DB for semantic job retrieval.
+- [x] **Explainable AI:** Local LLM (`Qwen2.5-1.5B`) integrated for natural language feedback.
+- [ ] **Career Roadmap:** Automated generation of detailed learning paths.
 
 ---
 

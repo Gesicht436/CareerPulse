@@ -1,61 +1,56 @@
 # Core Engine (`core_engine/`)
 
-The **Core Engine** is the central nervous system of CareerPulse. It handles the orchestration of security checks, semantic matching, and data persistence via a high-performance API.
+The **Core Engine** is the high-performance FastAPI backend of CareerPulse. It orchestrates security audits, semantic matching, and vector-based analysis.
 
 ---
 
 ## 1. Technical Stack
 
 - **Framework:** FastAPI
-- **Server:** Uvicorn + Gunicorn
-- **Validation:** Pydantic v2
-- **NLP & AI:**
-  - **Sentence-Transformers:** For semantic vector embeddings (`all-MiniLM-L6-v2`).
-  - **Qdrant:** Vector database for RAG (Retrieval-Augmented Generation).
-  - **pdfplumber:** Deep inspection of PDF structures.
-- **Security:** SlowAPI (Rate Limiting), Regex + Unicode Normalization.
-- **Dependency Management:** `uv` (Fast, efficient Python package manager).
+- **Python:** 3.12 (managed via `uv`)
+- **Parsing:** `pdfplumber` (PDF extraction)
+- **AI/NLP:**
+  - `spaCy` (PII detection with `en_core_web_sm`)
+  - `sentence-transformers` (Vector embeddings)
+- **Middleware:** CORSMiddleware enabled for frontend integration.
 
 ---
 
-## 2. Work Distribution
+## 2. Key Progress
 
-### **Mayank Anand (Team Lead)**
-
-- **API Gateway:** Designing the modular RESTful API structure under `/api/v1`.
-- **System Orchestration:** Managing the flow between `resume_security`, `smart_match`, and `data_layer`.
-- **Infrastructure:** Containerization and deployment logic using Docker.
+- [x] **Project Setup:** FastAPI initialized with modular routing.
+- [x] **Resume Security:** Implementation of `SecurityService` for adversarial defense.
+- [x] **Data Layer (RAG):** Full integration with Qdrant for semantic job search.
+- [x] **Explainable AI:** Local LLM (`Qwen2.5-1.5B`) for context-aware match feedback.
+- [x] **Secure Upload:** Created `/api/v1/security/upload` endpoint with PDF parsing.
+- [x] **Shared Services:** Singleton services for Embeddings and LLM inference.
 
 ---
 
 ## 3. Sub-Modules
 
-- **[`data_layer/`](./data_layer/):** Manages PostgreSQL (user data) and Qdrant (vector embeddings).
-- **[`resume_security/`](./resume_security/):** Handles adversarial AI defense and PII redaction.
-- **[`smart_match/`](./smart_match/):** Executes RAG-based matching between resumes and JDs.
+- **[`resume_security/`](./resume_security/):** Handles PII detection, hidden text check, and prompt injection defense.
+- **[`smart_match/`](./smart_match/):** (Next) RAG-based matching and skill-gap analysis.
+- **[`data_layer/`](./data_layer/):** Vector database (Qdrant) and relational storage.
 
 ---
 
-## 4. Key Feature Requirements
-
-1. **Modular Routing:** Clean separation of concerns between security, matching, and data endpoints.
-2. **Robust Middleware:** Global error handling and security headers for all API responses.
-3. **Stateless Auth:** Secure JWT-based authentication with appropriate token expiration and refresh logic.
-4. **Rate Limiting:** IP-based and user-based throttling to prevent API abuse.
-
----
-
-## 5. Development Setup
-
-We use `uv` for lightning-fast dependency management.
+## 4. Development Setup
 
 ```bash
-# Sync dependencies
+# Sync dependencies (from project root)
 uv sync
 
-# Run the API server with auto-reload
-cd core_engine
-uv run uvicorn main:app --reload
+# Run the API server with auto-reload from root directory
+uv run uvicorn core_engine.main:app --reload
 ```
 
-The API will be available at `http://localhost:8000`. You can access the interactive Swagger documentation at `http://localhost:8000/docs`.
+Interactive Swagger documentation is available at `http://localhost:8000/docs`.
+
+---
+
+## 5. Roadmap
+
+1. **Extraction Optimization:** Improving text extraction from complex PDF layouts.
+2. **Smart Match Integration:** Connecting extracted resume text to the RAG engine.
+3. **Authentication:** JWT-based user sessions for the Career Dashboard.

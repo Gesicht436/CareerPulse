@@ -12,30 +12,34 @@ Responsible for the persistence of both structured relational data and high-dime
 
 ---
 
-## 2. Data Ingestion & Raw Datasets
+## 2. Infrastructure & Ingestion
 
-To populate the engine with job descriptions for matching, we ingest raw data from Kaggle.
+### **Vector Database (Qdrant)**
 
-### **Fetch Raw Data:**
+We use Qdrant for storing and searching job description embeddings. It runs as a containerized service.
 
-Ensure your `KAGGLE_API_TOKEN` is set in the root `.env` file, then run:
+```bash
+# Start Qdrant
+docker-compose up -d qdrant
+```
+
+### **Data Ingestion Pipeline**
+
+1. **Fetch Raw Data:** Ensure `KAGGLE_API_TOKEN` is in `.env`, then run `uv run python scripts/setup_data.py`.
+2. **Ingest to Qdrant:** Processes the raw CSV, generates embeddings, and uploads to the `job_descriptions` collection.
+
 ```bash
 # Run from project root
-uv run python scripts/setup_data.py
+uv run python scripts/ingest_qdrant.py
 ```
-The data will be downloaded and unzipped into:
-- `core_engine/data_layer/raw/`
 
 ---
 
-## 3. Key Responsibilities
+## 3. Key Progress
 
-### **Mayank Anand**
-
-- **Schema Design:** Creating robust migrations for relational user data.
-- **Vector Indexing:** Optimizing Qdrant collections for fast semantic retrieval.
-- **Data Integrity:** Ensuring consistency between the primary database and the vector store.
-- **Backup & Recovery:** Implementing automated database snapshotting.
+- [x] **Qdrant Integration:** Automated collection creation and vector search.
+- [x] **Unified Query API:** Implementation of `query_points` for semantic retrieval.
+- [x] **Batch Ingestion:** Optimized script for bulk uploading job metadata.
 
 ---
 

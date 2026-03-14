@@ -6,28 +6,29 @@ Implements the core logic for matching job seekers to their ideal roles using st
 
 ## 1. Technical Stack
 
-- **Embeddings:** `sentence-transformers` (Model: `all-MiniLM-L6-v2`).
-- **Mathematics:** Cosine Similarity for semantic alignment calculation.
-- **Search:** RAG (Retrieval-Augmented Generation) pipeline.
-- **LLM:** Local models (planned) for explainable analysis.
+- **Embeddings:** `all-MiniLM-L6-v2` (shared `EmbeddingService`).
+- **Explainable AI:** `Qwen2.5-1.5B-Instruct` (shared `LLMService`).
+- **Search:** RAG pipeline integrated with Qdrant Vector DB.
 
 ---
 
-## 2. Current Implementation: Semantic Matching
+## 2. RAG & Explainable AI
 
-The engine has moved beyond keyword matching to **Semantic Matching**. It calculates the "meaning distance" between a Resume and a Job Description.
+The engine has evolved into a full **RAG (Retrieval-Augmented Generation)** system:
 
-### **How it works:**
-
-1. **Vectorization:** The entire resume and JD are converted into 384-dimensional dense vectors.
-2. **Cosine Similarity:** The engine calculates the angle between these vectors to determine alignment.
-3. **Scoring:** The raw similarity is scaled to a 0-100% "Match Score."
+1. **Contextual Retrieval:** Finds top-N relevant JDs from Qdrant based on the resume.
+2. **Semantic Scoring:** Uses Sentence-Transformers for alignment calculation.
+3. **AI Justification:** A local LLM analyzes the specific skills and experience to provide natural language feedback.
 
 ---
 
 ## 3. API Usage
 
-### **Endpoint:** `POST /api/v1/smart-match/match`
+### **Search All Jobs:** `POST /api/v1/smart-match/match-all`
+Matches a resume against the entire Qdrant database.
+
+### **Compare One-to-One:** `POST /api/v1/smart-match/match`
+Detailed match report for a specific Job Description.
 
 **Request Body:**
 ```json
