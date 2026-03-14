@@ -22,13 +22,14 @@ export const FileUploadZone = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/security/upload", {
+      const response = await fetch("http://127.0.0.1:8000/api/v1/security/upload", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload resume");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Failed to upload resume. Please ensure the backend server is running.");
       }
 
       const result = await response.json();
