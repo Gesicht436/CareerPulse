@@ -9,7 +9,7 @@ export default function UploadPage() {
         <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
           Secure Resume Analysis
         </h1>
-        <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl">
+        <p className="mx-auto max-w-150 text-muted-foreground md:text-xl">
           Upload your resume for a secure, AI-powered match analysis and skill-gap report.
         </p>
       </div>

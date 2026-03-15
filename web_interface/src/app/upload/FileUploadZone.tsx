@@ -129,7 +129,7 @@ export const FileUploadZone = () => {
                 <FileText className="h-6 w-6 text-primary" />
               </div>
               <div className="text-left">
-                <p className="font-medium truncate max-w-[200px]">{file.name}</p>
+                <p className="font-medium truncate max-w-50">{file.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {file.size < 1024 * 1024 
                     ? `${(file.size / 1024).toFixed(2)} KB` 
