@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
-from core_engine.data_layer.database import qdrant, QDRANT_COLLECTION
-from core_engine.data_layer.schemas import JobDescriptionModel
+from core_engine.datasets.database import qdrant, QDRANT_COLLECTION
+from core_engine.datasets.schemas import JobDescriptionModel
 from core_engine.embedding_service import embedding_service
 
 class DataLayerService:

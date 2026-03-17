@@ -61,40 +61,34 @@ C:\Users\mayan\coding\projects\CareerPulse
 
 - [uv](https://docs.astral.sh/uv/) (Modern Python package manager)
 - Docker & Docker Compose
-- Python
+- Python 3.12
 - Node.js
-- cuda 13.0
-- pytorch with cuda enabled
+- NVIDIA GPU with **CUDA 13.0** installed
 
 ### 2. Environment Setup
 
 ```bash
-# First install cuda 13.0
-
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/Gesicht436/CareerPulse.git 
 cd CareerPulse
 
-# Initialize venv
-uv venv venv
-.venv\Scripts\Activate.ps1
+# 2. Setup environment variables
+# Copy .env.example to .env and fill in your values
+# KAGGLE_API_TOKEN is required for data scripts
+# HF_TOKEN is optional for open models but recommended
+cp .env.example .env
 
-# Install pytorch 
-uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
+# 3. Sync dependencies (Automatically handles CUDA-specific PyTorch)
+# This uses the PyTorch CUDA 13.0 index defined in pyproject.toml
+uv sync --index-strategy unsafe-best-match
 
-# Sync dependencies
-uv sync
-
-# Setup Kaggle API Token
-# a. Go to https://www.kaggle.com/settings -> API Section -> Create New API Token.
-# b. This downloads 'kaggle.json'. Open it to find your 'username' and 'key'.
-# c. Rename .env.example to .env:
-# d. Edit .env and set KAGGLE_API_TOKEN using the format "username:key":
-# KAGGLE_API_TOKEN="your_username:your_api_key_here"
-
-# Download Project Datasets
-# This script automatically fetches and unzips datasets into the correct folders
+# 4. Download Project Datasets
+# Requires KAGGLE_API_TOKEN in your .env
 uv run python scripts/setup_data.py
+
+# 5. Ingest Data into Qdrant (Vector DB)
+# This will run on your GPU automatically
+uv run python scripts/ingest_qdrant.py
 ```
 
 ### 3. Module Specific Setup

@@ -11,19 +11,22 @@ The **Core Engine** is the high-performance FastAPI backend of CareerPulse. It o
 - **Parsing:** `pdfplumber` (PDF extraction)
 - **AI/NLP:**
   - `spaCy` (PII detection with `en_core_web_sm`)
-  - `sentence-transformers` (Vector embeddings)
+  - `sentence-transformers` (Vector embeddings on CUDA)
+  - `accelerate` (Optimized model loading)
+  - `bitsandbytes` (Quantization support)
 - **Middleware:** CORSMiddleware enabled for frontend integration.
 
 ---
 
 ## 2. Key Progress
 
-- [ ] **Project Setup:** FastAPI initialized with modular routing.
-- [ ] **Resume Security:** Implementation of `SecurityService` for adversarial defense.
-- [ ] **Data Layer (RAG):** Full integration with Qdrant for semantic job search.
-- [ ] **Explainable AI:** Local LLM (`Qwen2.5-1.5B`) for context-aware match feedback.
-- [ ] **Secure Upload:** Created `/api/v1/security/upload` endpoint with PDF parsing.
-- [ ] **Shared Services:** Singleton services for Embeddings and LLM inference.
+- [x] **Project Setup:** FastAPI initialized with modular routing.
+- [x] **GPU Acceleration:** Fully configured for CUDA 13.0 on NVIDIA RTX 3060.
+- [x] **Resume Security:** Implementation of `SecurityService` for adversarial defense.
+- [x] **Data Layer (RAG):** Full integration with Qdrant for semantic job search.
+- [x] **Explainable AI:** Local LLM (`Qwen2.5-1.5B`) for real-time match feedback.
+- [x] **Secure Upload:** Created `/api/v1/security/upload` endpoint with PDF parsing.
+- [x] **Shared Services:** Singleton services for Embeddings and LLM inference.
 
 ---
 
