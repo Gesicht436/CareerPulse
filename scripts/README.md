@@ -83,6 +83,26 @@ uv run python scripts/md_to_docx.py input.md -o Final_Report.docx
 
 ---
 
+## 4. `generate_visuals.py` (Visual Asset Generator)
+
+A specialized tool for creating professional, publication-quality diagrams and graphs for technical reports and academic submissions.
+
+### **Functionality**
+
+- **Aesthetic Consistency:** Uses a unified "System Design" color palette and typography across all visuals.
+- **Hardware Analysis:** Generates VRAM and Latency comparison graphs based on local hardware benchmarks (e.g., RTX 3060).
+- **Architecture Visualization:** Produces clean, vector-style diagrams for System Architecture, Security Pipelines, and RAG Workflows.
+- **Conceptual Diagrams:** Visualizes complex AI concepts like the "Semantic Gap", "Cosine Similarity", and "PII Redaction".
+- **Automated Export:** Saves all visuals directly to `project_assets/images/` for easy inclusion in Markdown or Word documents.
+
+### **Usage**
+
+```powershell
+uv run python scripts/generate_visuals.py
+```
+
+---
+
 ## Technical Notes
 
 - **Environment:** All scripts should be executed via `uv run` to ensure they utilize the project's specific virtual environment and CUDA-optimized dependencies.

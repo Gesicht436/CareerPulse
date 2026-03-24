@@ -43,15 +43,22 @@ def _perform_conversion(src: Path, dest: Path):
         
         # Professional Arguments:
         # --standalone: Creates a full document with headers/metadata
+        # --resource-path: Tells Pandoc where to look for images (relative to the input file)
+        # --from markdown+raw_attribute: Ensures {=openxml} blocks are parsed correctly
+        resource_path = str(src.parent)
+        
         extra_args = [
             '--standalone',
-            '--wrap=none'
+            '--wrap=none',
+            f'--resource-path=.;{resource_path}',
+            '--from=markdown+raw_attribute+backtick_code_blocks'
         ]
 
         # Use pypandoc to perform the conversion
         pypandoc.convert_file(
             str(src), 
             'docx', 
+            format='markdown+raw_attribute', # Explicitly enable raw OpenXML
             outputfile=str(dest),
             extra_args=extra_args
         )
