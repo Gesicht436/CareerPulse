@@ -18,7 +18,7 @@ Built for the Capstone Project at IIT Patna (2026).
 
 ## The Tech Stack
 
-- **Frontend:** Next.js 15+ (App Router), TypeScript, Tailwind CSS v4, shadcn/ui, Zustand.
+- **Frontend:** Vanilla HTML5, JavaScript (ES Modules), Tailwind CSS v4 (via CLI), live-server.
 - **Backend:** FastAPI, Python 3.12 (managed via `uv`), Pydantic v2, pdfplumber, spaCy.
 - **AI/ML:** Sentence-Transformers, Qdrant (Vector DB), en_core_web_sm (spaCy model).
 - **Infrastructure:** Docker & Docker Compose, `uv` (Package Management).
@@ -29,10 +29,11 @@ Built for the Capstone Project at IIT Patna (2026).
 
 ### Phase 1: Foundation, Security & Smart Match (In Progress)
 
-- [ ] **Frontend Initialization:** Next.js project setup with Atomic Architecture.
-- [ ] **UI/UX:** Responsive landing page, secure upload zone, and dashboard placeholder.
+- [x] **Frontend Initialization:** Vanilla HTML/JS setup with Tailwind CSS v4.
+- [x] **UI/UX:** Responsive landing page, secure upload zone, and dashboard placeholder.
+- [x] **API Connectivity:** Established `apiClient` for backend communication.
 - [ ] **Backend Security:** Implementation of `Resume Security` module (PII detection, hidden text check).
-- [ ] **Integration:** Frontend-to-Backend file upload pipeline established.
+- [x] **Integration:** Frontend-to-Backend file upload pipeline established.
 - [ ] **Smart Match (RAG):** Full integration with Qdrant Vector DB for semantic job retrieval.
 - [ ] **Explainable AI:** Local LLM (`Qwen2.5-1.5B`) integrated for natural language feedback.
 - [ ] **Career Roadmap:** Automated generation of detailed learning paths.
@@ -60,10 +61,19 @@ C:\Users\mayan\coding\projects\CareerPulse
 ### 1. Prerequisites
 
 - [uv](https://docs.astral.sh/uv/) (Modern Python package manager)
+- NVIDIA GPU with **CUDA 13.0** installed
 - Docker & Docker Compose
 - Python 3.12
+- Node version manager
 - Node.js
-- NVIDIA GPU with **CUDA 13.0** installed
+
+```bash
+winget install --id Nvidia.CUDA --version 13.0
+winget install Docker.DockerDesktop
+uv install python 3.12
+winget install CoreyButler.NVMforWindows
+npm install latest
+```
 
 ### 2. Environment Setup
 
@@ -86,7 +96,10 @@ uv sync --index-strategy unsafe-best-match
 # Requires KAGGLE_API_TOKEN in your .env
 uv run python scripts/setup_data.py
 
-# 5. Ingest Data into Qdrant (Vector DB)
+# 5. Compose Docker container for qdrant
+docker-compose up --build
+
+# 6. Ingest Data into Qdrant (Vector DB)
 # This will run on your GPU automatically
 uv run python scripts/ingest_qdrant.py
 ```
@@ -105,14 +118,6 @@ uv run uvicorn core_engine.main:app --reload
 cd ../web_interface
 npm install
 npm run dev
-```
-
-### 3. Running the Project
-
-The easiest way is to use Docker:
-
-```bash
-docker-compose up --build
 ```
 
 ---

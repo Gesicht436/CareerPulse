@@ -1,0 +1,23 @@
+{
+  "name": "web_interface",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:css": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css --watch",
+    "dev:server": "live-server --port=3000 src",
+    "dev": "concurrently \"npm run dev:css\" \"npm run dev:server\"",
+    "build": "tailwindcss -i ./src/css/input.css -o ./src/css/output.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "concurrently": "^9.2.1",
+    "live-server": "^1.2.2",
+    "tailwindcss": "^4.2.2"
+  }
+}

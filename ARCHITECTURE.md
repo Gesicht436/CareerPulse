@@ -22,11 +22,11 @@ This document defines the system architecture, team responsibilities, and Git wo
 
 **Abhinav 285** | **Harsh** |
 
-- **Tech Stack:** NextJS, Typescript, Tailwind CSS, Zustand(state management), React Hook Form + Zod, Recharts or ECharts.
+- **Tech Stack:** Vanilla HTML5, JavaScript (ES Modules), Tailwind CSS v4 (CLI), live-server.
 - **Responsibilities:**
-- **Abhinav 285:** Component architecture, state management, and file upload logic.
+- **Abhinav 285:** UI/UX structure, Vanilla JS application logic, and file upload handling.
 - **Harsh:** Data visualization for "Career Readiness" scores and skill-gap heatmaps.
-- **Integration:** Connecting the frontend hooks to the `core_engine` API.
+- **Integration:** Connecting the frontend scripts to the `core_engine` API using a unified `apiClient`.
 
 ### 1.3 Data Pipeline (`data_pipeline/`)
 
