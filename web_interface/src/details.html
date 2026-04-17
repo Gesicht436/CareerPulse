@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="css/output.css">
 </head>
 
-<body class="bg-white text-gray-900 flex flex-col min-h-screen antialiased">
+<body class="bg-slate-950 text-gray-900 flex flex-col min-h-screen antialiased">
 
   <!-- Navbar -->
-  <nav class="flex justify-between items-center px-8 py-5 border-b bg-white sticky top-0 z-50">
+  <nav class="flex justify-between items-center px-8 py-5 border-b bg-violet-300 sticky top-0 z-50">
     <div class="text-xl font-bold text-blue-600">
       <a href="index.html">CareerPulse</a>
     </div>
@@ -27,14 +27,93 @@
   <!-- Main Section -->
   <section class="max-w-4xl mx-auto px-6 py-12 grow w-full">
 
-    <h1 class="text-4xl font-bold mb-10">Personal Details</h1>
+    <h1 class="text-4xl font-bold mb-3 text-white">Personal Details</h1>
+    <div class=" text-sm text-white mb-10">Help us personalize your career insights. Your data stays private and is processed locally</div>
     
     <!-- TODO: Teammates implement the Personal Details form here -->
-    <div class="border-2 border-dashed border-slate-200 rounded-2xl p-20 text-center text-slate-400">
-      Profile and Experience Form Goes Here
+    <div class="border-2 border-dashed border-slate-200 rounded-2xl h-50  text-slate-400">
+     <div class=" ml-4 mt-5 text-white">Basic Information</div>
+     <div class=" flex ">
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-4 pl-4  placeholder-white" placeholder="   Your name" type="   text"> 
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-60 pl-4  placeholder-white" placeholder=" Age" type="   text"> 
+     </div>
+     <div class=" flex ">
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-4 pl-4  placeholder-white" placeholder=" Locality(city,country)" type="   text"> 
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-60 pl-4  placeholder-white" placeholder=" Email" type="   text"> 
+     </div>
+
+    </div>
+
+    <!---second part-->
+
+    <div class="border-2 border-dashed border-slate-200 rounded-2xl h-30  text-slate-400 mt-10">
+     <div class=" ml-4 mt-5 text-white">Current Status</div>
+     <div class=" flex">
+     
+      <div class="w-3 h-3 bg-white rounded-full ml-5 mt-5"></div>
+      <div class=" text-sm text-white mt-3.5 ml-4"> Student </div>
+      <div class="w-3 h-3 bg-white rounded-full ml-8 mt-5"></div>
+      <div class=" text-sm text-white mt-3.5 ml-4"> Working Professional </div>
+      <div class="w-3 h-3 bg-white rounded-full ml-8 mt-5"></div>
+      <div class=" text-sm text-white mt-3.5 ml-4"> Others </div>
+     </div>
+    </div>
+
+
+
+
+
+    <! third part>
+
+
+    <div class="border-2 border-dashed border-slate-200 rounded-2xl h-50  text-slate-400 mt-10">
+     <div class=" ml-4 mt-5 text-white">Education/Work</div>
+     <div class=" flex ">
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-4 pl-4 placeholder-white" placeholder="Current job/Role" type="   text"> 
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-60 pl-4  placeholder-white" placeholder=" University/campany" type="   text"> 
+     </div>
+     <div class=" flex ">
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-4 pl-4  placeholder-white" placeholder=" Year of experience" type="   text"> 
+      <input class=" w-70 h-10 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-60 pl-4  placeholder-white" placeholder=" Primary field (eg:web dev,ML)" type="   text"> 
+     </div>
+
     </div>
 
   </section>
+
+
+  <!--FOUR PART-->
+
+  <div class="border-2 border-dashed border-slate-200 rounded-2xl h-80  text-slate-400 ml-83 mr-83 ">
+     <div class=" ml-4 mt-5 text-white">Education/Work</div>
+     
+      <div>
+        <input class=" w-200 h-12 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-4 pl-4 py-0.5 placeholder-white" placeholder="Target Role (eg:AI engineer)" type="   text"> 
+      </div>
+     
+      <div>
+      <input class=" w-200 h-12 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-10 ml-4 pl-4 py-0.5 placeholder-white" placeholder="Target campanies (optional)" type="   text"> 
+       </div>
+      <input class=" w-200 h-15 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-10 ml-4 pl-4 py-0.5 placeholder-white" placeholder=" Describe your carrer Goals (Optionals)" type="   text">  
+    
+
+    </div>
+
+
+    <div class="border-2 border-dashed border-slate-200 rounded-2xl h-40  text-slate-400 ml-83 mr-83 mt-10 ">
+     <div class=" ml-4 mt-5 text-white">Skills</div>
+     <input class=" w-200 h-20 border-2 border-dashed border-slate-200 rounded-xl  text-white mt-5 ml-4 pl-4 pb-5 placeholder-white" placeholder="List your key skills (eg:python,AWS)" type="   text"> 
+       </div>
+
+     </div>
+
+     <div class=" flex justify-between">
+      <div class=" text-white text-sm ml-83 mt-5 w-90"> This information improves your match accuracy and recommendations. We do not sell or share your data.
+
+      </div>
+      <button class=" text-xl text-white bg-violet-300  mt-5 mr-83  rounded-xl px-0.5 w-40 mb-10 h-12 hover:opacity-60 cursor-pointer"> save & continue</button>
+     </div>
+
 
   <!-- Footer -->
   <footer class="border-t text-center py-6 text-sm text-gray-500 bg-white mt-auto">
