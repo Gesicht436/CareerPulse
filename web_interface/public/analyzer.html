@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JD Analyzer — CareerPulse</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#fafafa] text-slate-900 flex flex-col min-h-screen antialiased selection:bg-violet-100">
+
+    <!-- Navbar -->
+    <nav
+        class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-violet-200">
+                <span class="text-white font-bold text-lg">C</span>
+            </div>
+            <a href="index.html" class="text-xl font-bold tracking-tight text-slate-900">CareerPulse</a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+            <a href="search.html" class="text-slate-500 hover:text-violet-600 transition-colors">Search Jobs</a>
+            <a href="analyzer.html" class="text-violet-600 font-bold">JD Analyzer</a>
+            <a href="upload.html" class="text-slate-500 hover:text-violet-600 transition-colors">Upload</a>
+            <a href="dashboard.html" class="text-slate-500 hover:text-violet-600 transition-colors">Dashboard</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
+                <span class="text-slate-600 text-[10px] font-bold">JD</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="grow max-w-5xl mx-auto px-6 py-12 w-full">
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold tracking-tight text-slate-900 mb-4">Job Description Analyzer</h1>
+            <p class="text-slate-500 text-lg">Paste a job description below to see how well your profile matches the
+                requirements.</p>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-12">
+            <!-- Input Section -->
+            <section class="space-y-6">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-bold text-slate-900">Job Description</h2>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Text Input</span>
+                    </div>
+                    <textarea id="jd-input" placeholder="Paste the full job description here..."
+                        class="w-full grow min-h-100 p-6 rounded-3xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 transition-all text-sm leading-relaxed resize-none"></textarea>
+                    <button id="analyze-jd-btn"
+                        class="w-full bg-slate-900 text-white font-bold py-5 rounded-3xl mt-6 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-[0.98]">
+                        Analyze Match
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Section (Initially Placeholder) -->
+            <section id="analysis-placeholder"
+                class="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2.5rem] p-12 text-center bg-white">
+                <div class="w-20 h-20 bg-violet-50 rounded-full flex items-center justify-center mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-violet-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Ready to analyze</h3>
+                <p class="text-slate-500 max-w-xs">Paste a JD and click 'Analyze Match' to get instant feedback on your
+                    fit.</p>
+            </section>
+
+            <!-- Dynamic Results (Hidden) -->
+            <section id="analysis-results" class="hidden space-y-8 animate-fade-in">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-xl font-bold text-slate-900">Analysis Summary</h2>
+                        <div
+                            class="w-12 h-12 rounded-xl bg-violet-600 flex items-center justify-center text-white font-bold">
+                            84%
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Key Strengths
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-teal-50 text-teal-600 rounded-full text-xs font-bold">Python
+                                    Mastery</span>
+                                <span class="px-3 py-1 bg-teal-50 text-teal-600 rounded-full text-xs font-bold">Cloud
+                                    Infrastructure</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Improvement
+                                Areas</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 bg-rose-50 text-rose-500 rounded-full text-xs font-bold">Kubernetes
+                                    experience</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-xl shadow-slate-200">
+                    <h3 class="text-lg font-bold mb-4">AI Recommendation</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6 italic">
+                        "This role is a strong match for your background in backend engineering. To improve your
+                        chances, highlight your experience with containerization in the summary section of your resume."
+                    </p>
+                    <button
+                        class="w-full bg-violet-600 text-white font-bold py-4 rounded-2xl hover:bg-violet-700 transition-all">
+                        Update Resume for this JD
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="py-12 border-t border-slate-100 text-center text-xs text-slate-400 mt-20">
+        © 2026 CareerPulse. Secure AI-powered career pathfinding.
+    </footer>
+
+    <script src="js/analyzer.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CareerPulse — Privacy-First AI Career Pathfinding</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#fafafa] text-slate-900 flex flex-col min-h-screen antialiased selection:bg-violet-100">
+
+    <!-- Navbar -->
+    <nav
+        class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-violet-200">
+                <span class="text-white font-bold text-lg">C</span>
+            </div>
+            <a href="index.html"
+                class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-violet-600 to-indigo-600">CareerPulse</a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+            <a href="search.html" class="text-slate-500 hover:text-violet-600 transition-colors">Search Jobs</a>
+            <a href="analyzer.html" class="text-slate-500 hover:text-violet-600 transition-colors">JD Analyzer</a>
+            <a href="upload.html" class="text-slate-500 hover:text-violet-600 transition-colors">Upload</a>
+            <a href="dashboard.html" class="text-slate-500 hover:text-violet-600 transition-colors">Dashboard</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="login.html"
+                class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors px-4 py-2">Sign In</a>
+            <a href="upload.html"
+                class="bg-violet-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-violet-700 transition-all hover:shadow-lg hover:shadow-violet-200">Get
+                Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="grow">
+        <section class="max-w-6xl mx-auto px-6 pt-24 pb-32 text-center">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-bold uppercase tracking-wider mb-8 animate-fade-in">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+                </span>
+                Privacy-First AI Analysis
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-8 leading-[1.1]">
+                Secure your future with <br />
+                <span class="text-transparent bg-clip-text bg-linear-to-r from-violet-600 to-indigo-600">intelligent
+                    pathfinding.</span>
+            </h1>
+
+            <p class="text-xl text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed">
+                Analyze your resume, find the perfect job match, and build a personalized career roadmap—all while
+                keeping your data private and local.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="upload.html"
+                    class="w-full sm:w-auto bg-slate-900 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-800 transition-all hover:shadow-xl shadow-slate-200">
+                    Upload Your Resume
+                </a>
+                <a href="search.html"
+                    class="w-full sm:w-auto bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:border-slate-300 transition-all">
+                    Browse Opportunities
+                </a>
+            </div>
+
+            <!-- Trust Badges / Stats -->
+            <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-slate-100 pt-16">
+                <div>
+                    <div class="text-3xl font-bold text-slate-900">100%</div>
+                    <div class="text-sm text-slate-500 mt-1 uppercase tracking-widest font-medium">Local Processing
+                    </div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-slate-900">Secure</div>
+                    <div class="text-sm text-slate-500 mt-1 uppercase tracking-widest font-medium">PII Redaction</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-slate-900">Smart</div>
+                    <div class="text-sm text-slate-500 mt-1 uppercase tracking-widest font-medium">RAG Integration</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-slate-900">Free</div>
+                    <div class="text-sm text-slate-500 mt-1 uppercase tracking-widest font-medium">For Everyone</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section (Subtle Grid) -->
+        <section class="bg-white py-32">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="grid md:grid-cols-3 gap-12">
+                    <div class="group">
+                        <div
+                            class="w-12 h-12 bg-violet-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-violet-600 transition-colors duration-500">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-6 h-6 text-violet-600 group-hover:text-white transition-colors" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-slate-900">Privacy First</h3>
+                        <p class="text-slate-500 leading-relaxed">Your resume never leaves your device. Our local engine
+                            handles all the processing securely.</p>
+                    </div>
+
+                    <div class="group">
+                        <div
+                            class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 transition-colors duration-500">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-6 h-6 text-indigo-600 group-hover:text-white transition-colors" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-slate-900">Instant Analysis</h3>
+                        <p class="text-slate-500 leading-relaxed">Get a comprehensive match score and skill gap analysis
+                            in seconds using our RAG-powered engine.</p>
+                    </div>
+
+                    <div class="group">
+                        <div
+                            class="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-600 transition-colors duration-500">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-6 h-6 text-teal-600 group-hover:text-white transition-colors" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-slate-900">Skill Roadmaps</h3>
+                        <p class="text-slate-500 leading-relaxed">Bridge the gap with a personalized 4-week learning
+                            plan designed to help you land your dream role.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-12">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-slate-200 rounded flex items-center justify-center">
+                    <span class="text-slate-500 font-bold text-xs">C</span>
+                </div>
+                <span class="text-slate-900 font-bold tracking-tight">CareerPulse</span>
+            </div>
+
+            <div class="flex gap-8 text-sm text-slate-500 font-medium">
+                <a href="#" class="hover:text-violet-600 transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-violet-600 transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-violet-600 transition-colors">Documentation</a>
+                <a href="https://github.com/CareerPulse" class="hover:text-violet-600 transition-colors">GitHub</a>
+            </div>
+
+            <p class="text-sm text-slate-400">
+                © 2026 CareerPulse. Built for the future of work.
+            </p>
+        </div>
+    </footer>
+
+    <script src="js/main.js" type="module"></script>
+</body>
+
+</html>
