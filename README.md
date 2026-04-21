@@ -142,6 +142,10 @@ cd web_interface
 npm install
 # Start the development server (CSS watch + Live Server)
 npm run dev
+# If you face any issues please run please run the following commands in sequence
+Remove-Item -Recurse -Force node_modules
+npm install
+npm run dev
 ```
 
 ### 5. Launch the Engine

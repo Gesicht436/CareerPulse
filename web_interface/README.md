@@ -69,6 +69,14 @@ To work on the interface with real-time CSS compilation and auto-reloading:
 npm run dev
 ```
 
+If you face any issues please run the following:
+
+```bash
+Remove-Item -Recurse -Force node_modules
+npm install
+npm run dev
+```
+
 This command runs `concurrently`:
 
 - **`watch:css`**: Listens for changes in `input.css` or any HTML/JS file and rebuilds the `style.css`.

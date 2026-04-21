@@ -53,11 +53,11 @@ The project is led by **Mayank Anand**, who oversees the end-to-end integration 
 
 ### Team Roles
 
-- **Mayank Anand (Team Lead)**: System Architecture, API Integration Layer, Local LLM Inference Orchestration, Design Fine-tuning (Colors, Typography, Geometry), and Final Core Integration.
+- **Mayank Anand (Team Lead)**: System Architecture, API Integration Layer, Qdrant Configuration, Local LLM Inference Orchestration, Design Fine-tuning (Colors, Typography, Geometry), and Final Core Integration.
 - **Abhinav Anand (285)**: Frontend Core Development, JavaScript State Management and Responsive Design Implementation.
 - **Harsh Anand**: Frontend UI/UX Architecture, Component Structure, HTML/Tailwind Styling, and Responsive Design Implementation.
-- **Abhinav Anand (08)**: Data Engineering, Dataset Curation/Cleaning, Qdrant Configuration, and Data Ingestion Pipeline (ETL).
-- **Ankit Anand**: Quality Assurance, Security Auditing Logic, Performance Benchmarking, and Automated Testing (Unit/Integration).
+- **Abhinav Anand (08)**: Quality Assurance, Auditing Logic, Performance Benchmarking, and Automated Testing (Unit/Integration).
+- **Ankit Anand**: Dataset Curation/Cleaning Security, Data Engineering, Data Ingestion Pipeline (ETL).
 
 ---
 
@@ -73,11 +73,9 @@ This section tracks the specific tasks allocated to each team member. It serves 
 | **Abhinav Anand (285)** | Implement state management for the Analysis Dashboard and Career Roadmap. | High | Done |
 | **Harsh Anand** | Design the HTML architecture for the Upload, Dashboard, and Search pages. | High | Done |
 | **Harsh Anand** | Implement utility-first styling using Tailwind CSS v4 across all views. | High | Done |
-| **Abhinav Anand (08)** | Curate and clean the 2025 Tech Job Description dataset from Kaggle. | Medium | Done |
-| **Abhinav Anand (08)** | Set up Qdrant Docker instance and implement the `ingest_qdrant.py` script. | High | Done |
-| **Ankit Anand** | Develop unit tests for the `SecurityService` (redaction and injection checks). | Low | **Pending** |
-| **Ankit Anand** | Perform VRAM/Latency benchmarking for 1.5B vs 7B models. | Medium | **Pending** |
-| **Ankit Anand** | Build the `Quality Assurance` folder and implement end-to-end API tests. | High | **Pending** |
+| **Abhinav Anand (08)** | Develop unit tests for the `FastAPI backend` (redaction and injection checks). | Low | In process |
+| **Abhinav Anand (08)** | Perform VRAM/Latency benchmarking for 1.5B vs 7B models. | Medium | In Process |
+| **Ankit Anand** | Curate and clean the Tech Job Description dataset from Kaggle. | Medium | Pending |
 
 ---
 
@@ -89,19 +87,20 @@ This section confirms the successfully completed and verified modules currently 
   - Architected the `core_engine` modular structure.
   - Integrated `sentence-transformers` for real-time vector generation.
   - Implemented the `LLMService` with `bitsandbytes` quantization.
+  - Integrated Tailwind CSS v4 and optimized the build pipeline (`watch:css`).
   - Refined the `Web Interface` visuals (Professional blue-theme, rounded cards, smooth transitions).
 - **[Abhinav Anand (285)]**:
-  - Developed `api.js` for centralized communication.
-  - Built the logic for `analyzer.js` and `dashboard.js` to parse AI JSON responses.
-  - Managed the file upload stream and error handling for PDF ingestion.
+  - Finalized the HTML layouts for `index.html`, `upload.html`, and `analyzer.html`.
+  - Built the logic for `analyzer.js` and `dashboard.js` to parse AI JSON responses and `api.js` for centralized communication.
+  - Ensured full responsiveness across mobile and desktop view.
 - **[Harsh Anand]**:
   - Finalized the HTML layouts for `index.html`, `upload.html`, and `analyzer.html`.
-  - Integrated Tailwind CSS v4 and optimized the build pipeline (`watch:css`).
+  - Built the logic for `analyzer.js` and `dashboard.js` to parse AI JSON responses and `api.js` for centralized communication.
   - Ensured full responsiveness across mobile and desktop view.
 - **[Abhinav Anand (08)]**:
-  - Nothing until now
+  - Developed unit tests for the FastAPI backend.
 - **[Ankit Annad]**:
-  - Nothin until now
+  - Nothing until now
 
 ---
 
