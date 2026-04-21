@@ -16,3 +16,7 @@ wheels/
 qdrant_data/
 **/raw/
 **/processed/
+
+# Node dependencies
+node_modules/
+.DS_Store
