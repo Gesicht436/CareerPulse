@@ -17,6 +17,12 @@ class JobMatchResult(BaseModel):
     job_id: str
     job_title: str
     company: str
+    location: Optional[str] = None
+    country: Optional[str] = None
+    experience: Optional[str] = None
+    qualifications: Optional[str] = None
+    salary_range: Optional[str] = None
+    work_type: Optional[str] = None
     match_details: SmartMatchResponse
 
 class MultiJobMatchResponse(BaseModel):

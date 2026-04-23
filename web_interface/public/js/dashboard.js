@@ -14,20 +14,46 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const fullResponse = JSON.parse(storedData);
-        // The endpoint returns { filename, security_report, analysis: { job_title, match_details: { ... } } }
-        const analysisData = fullResponse.analysis ? fullResponse.analysis.match_details : null;
+        // The endpoint returns { filename, security_report, analysis: { job_title, match_details: { ... }, ... } }
+        const analysis = fullResponse.analysis;
+        const matchDetails = analysis ? analysis.match_details : null;
 
-        if (analysisData) {
+        if (matchDetails) {
             // Update the UI with real data
-            if (fullResponse.analysis.job_title) {
-                const titleEl = document.querySelector('header h1');
-                if (titleEl) titleEl.textContent = `Match for ${fullResponse.analysis.job_title}`;
+            if (analysis.job_title) {
+                const titleEl = document.getElementById('job-title');
+                if (titleEl) titleEl.textContent = analysis.job_title;
 
-                const descEl = document.querySelector('header p');
-                if (descEl) descEl.textContent = `Best match found at ${fullResponse.analysis.company || 'External Platform'}`;
+                const companyEl = document.getElementById('company-name');
+                if (companyEl) companyEl.textContent = analysis.company || 'Unknown Company';
+
+                const locationEl = document.getElementById('job-location');
+                if (locationEl) {
+                    const locStr = [analysis.location, analysis.country].filter(Boolean).join(', ');
+                    locationEl.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        ${locStr || 'Remote / Unspecified'}
+                    `;
+                }
+
+                const salaryEl = document.getElementById('salary-range');
+                if (salaryEl) {
+                    salaryEl.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ${analysis.salary_range || 'N/A'}
+                    `;
+                }
+
+                const expEl = document.getElementById('experience-level');
+                if (expEl) {
+                    expEl.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        ${analysis.experience || 'Not specified'}
+                    `;
+                }
             }
 
-            renderDashboard(analysisData);
+            renderDashboard(matchDetails);
         } else {
             console.error('Analysis data is incomplete.');
         }

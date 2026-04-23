@@ -60,43 +60,64 @@ def add_arrow(ax, start, end, label="", label_pos='top'):
 # --- Existing Visuals (Refined) ---
 
 def generate_vram_graph():
-    labels = ['Qwen-1.5B', 'Llama-3.2-3B', 'Qwen-7B (4-bit)']
-    vram_usage = [3.5, 4.8, 5.0]
+    labels = ['TinyLlama', 'Qwen-1.5B', 'Gemma-2B', 'Llama-3.2-3B', 'Qwen-7B (4-bit)']
+    vram_usage = [2.2, 3.5, 4.2, 5.2, 5.8]
     usable_vram, total_vram = 4.8, 6.0
-    fig, ax = plt.subplots(figsize=(10, 6), facecolor=COLORS['background'])
+    
+    fig, ax = plt.subplots(figsize=(12, 7), facecolor=COLORS['background'])
     ax.grid(axis='y', linestyle='--', alpha=0.3, zorder=0)
-    ax.axhline(y=total_vram, color=COLORS['danger'], linestyle='-', linewidth=2, label='Total VRAM (6GB)')
-    ax.axhline(y=usable_vram, color=COLORS['warning'], linestyle='--', linewidth=2, label='Usable Budget (~4.8GB)')
-    bars = ax.bar(labels, vram_usage, color=[COLORS['success'], COLORS['primary'], COLORS['danger']], alpha=0.7, zorder=3, width=0.5)
+    
+    # Lines for constraints
+    ax.axhline(y=total_vram, color=COLORS['danger'], linestyle='-', linewidth=2, label='Total VRAM (6GB)', zorder=2)
+    ax.axhline(y=usable_vram, color=COLORS['warning'], linestyle='--', linewidth=2, label='Usable Budget (~4.8GB)', zorder=2)
+    
+    # Distinct colors for consistency with benchmark graph
+    colors = ['#94a3b8', '#10b981', '#6366f1', '#f59e0b', '#ef4444']
+    
+    bars = ax.bar(labels, vram_usage, color=colors, alpha=0.7, zorder=3, width=0.6)
+    
     for bar in bars:
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, f'{bar.get_height()}GB', ha='center', fontweight='bold')
+    
     ax.set_ylabel('VRAM Usage (GB)', fontweight='bold', color=COLORS['secondary'])
-    ax.set_title('Hardware Constraint: VRAM Consumption', fontsize=14, fontweight='bold', pad=20)
+    ax.set_title('Extended Hardware Constraint: VRAM Consumption', fontsize=16, fontweight='bold', pad=30)
+    ax.set_ylim(0, 8.5)
+    
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.legend(frameon=False)
+    ax.legend(frameon=False, loc='upper left')
+    
     plt.savefig('project_assets/images/vram_comparison.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def generate_latency_graph():
-    models = ['Qwen-1.5B', 'Llama-3.2-3B', 'Qwen-7B (4-bit)']
-    latency = [1.0, 3.5, 7.5]
-    fig, ax = plt.subplots(figsize=(10, 6), facecolor=COLORS['background'])
+    models = ['TinyLlama', 'Qwen-1.5B', 'Gemma-2B', 'Llama-3.2-3B', 'Qwen-7B']
+    latency = [0.4, 1.0, 1.8, 3.5, 7.5]
+    
+    fig, ax = plt.subplots(figsize=(12, 7), facecolor=COLORS['background'])
     ax.grid(axis='y', linestyle='--', alpha=0.3, zorder=0)
-    bars = ax.bar(models, latency, color=[COLORS['success'], COLORS['primary'], COLORS['danger']], alpha=0.7, zorder=3, width=0.5)
+    
+    # Distinct colors for consistency
+    colors = ['#94a3b8', '#10b981', '#6366f1', '#f59e0b', '#ef4444']
+    
+    bars = ax.bar(models, latency, color=colors, alpha=0.7, zorder=3, width=0.6)
+    
     for bar in bars:
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, f'{bar.get_height()}s', ha='center', fontweight='bold')
+    
     ax.set_ylabel('Latency (Seconds)', fontweight='bold', color=COLORS['secondary'])
-    ax.set_title('Inference Speed Analysis', fontsize=14, fontweight='bold', pad=20)
+    ax.set_title('Extended Inference Speed Analysis', fontsize=16, fontweight='bold', pad=20)
+    
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
+    
     plt.savefig('project_assets/images/latency_comparison.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def generate_arch_diagram():
     fig, ax = setup_plot("CareerPulse: System Architecture")
     bw, bh = 0.22, 0.12 
-    add_box(ax, 0.05, 0.45, bw, bh, "Web Interface\n(Next.js 15+)", COLORS['primary'])
+    add_box(ax, 0.05, 0.45, bw, bh, "Web Interface\n(HTML, JS, Tailwindcss V4)", COLORS['primary'])
     add_box(ax, 0.38, 0.45, bw, bh, "Backend Core\n(FastAPI)", COLORS['warning'])
     add_box(ax, 0.72, 0.65, bw, bh, "Security Service\n(Adversarial Check)", COLORS['danger'])
     add_box(ax, 0.72, 0.25, bw, bh, "Intelligence Layer\n(RAG / Vector)", COLORS['success'])
@@ -199,6 +220,111 @@ def generate_pii_redaction():
     plt.savefig('project_assets/images/pii_redaction.png', dpi=300, bbox_inches='tight')
     plt.close()
 
+# 9. LLM Benchmarks (Chapter 4.1)
+def generate_benchmark_graph():
+    benchmarks = ['MMLU', 'HumanEval', 'GSM8K', 'MBPP']
+    # Benchmark data (%)
+    tiny = [26.4, 14.1, 2.0, 10.6]
+    qwen1 = [52.4, 37.8, 40.1, 42.1]
+    gemma = [51.3, 17.7, 23.9, 29.6]
+    llama3 = [63.4, 65.0, 77.7, 67.0]
+    qwen7 = [74.2, 84.8, 91.6, 79.2]
+
+    x = np.arange(len(benchmarks))
+    width = 0.16 # Narrower bars to fit 5 models
+
+    fig, ax = plt.subplots(figsize=(15, 8), facecolor=COLORS['background'])
+    
+    # Define distinct colors for 5 models
+    colors = ['#94a3b8', '#10b981', '#6366f1', '#f59e0b', '#ef4444'] # Gray, Emerald, Indigo, Amber, Red
+
+    rects1 = ax.bar(x - 2*width, tiny, width, label='TinyLlama (1.1B)', color=colors[0], alpha=0.6)
+    rects2 = ax.bar(x - width, qwen1, width, label='Qwen2.5-1.5B', color=colors[1], alpha=0.8)
+    rects3 = ax.bar(x, gemma, width, label='Gemma-2-2B', color=colors[2], alpha=0.7)
+    rects4 = ax.bar(x + width, llama3, width, label='Llama-3.2-3B', color=colors[3], alpha=0.7)
+    rects5 = ax.bar(x + 2*width, qwen7, width, label='Qwen2.5-7B', color=colors[4], alpha=0.8)
+
+    ax.set_ylabel('Score (%)', fontweight='bold', color=COLORS['secondary'])
+    ax.set_title('Extended Benchmark Comparison: Scalability vs Intelligence', fontsize=18, fontweight='bold', pad=45)
+    ax.set_xticks(x)
+    ax.set_xticklabels(benchmarks, fontweight='bold', fontsize=11)
+    
+    # Legend at the top, spread out
+    ax.legend(frameon=False, loc='upper center', ncol=5, fontsize=10, bbox_to_anchor=(0.5, 1.05))
+    ax.set_ylim(0, 105) 
+
+    # Add labels on top of bars
+    def autolabel(rects):
+        for rect in rects:
+            height = rect.get_height()
+            ax.annotate(f'{height}%',
+                        xy=(rect.get_x() + rect.get_width() / 2, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+    autolabel(rects1)
+    autolabel(rects2)
+    autolabel(rects3)
+    autolabel(rects4)
+    autolabel(rects5)
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.grid(axis='y', linestyle='--', alpha=0.1)
+
+    plt.savefig('project_assets/images/llm_benchmarks.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+# 10. Project Setup Flow
+def generate_setup_flow():
+    fig, ax = setup_plot("CareerPulse: Rapid Setup & Deployment Flow", figsize=(12, 10))
+    
+    steps = [
+        "1. Environment\n(.env & uv sync)",
+        "2. Dependencies\n(spaCy & Tesseract)",
+        "3. Data Acquisition\n(setup_data.py)",
+        "4. Vector DB\n(docker-compose)",
+        "5. Ingestion\n(ingest_qdrant.py)",
+        "6. Launch\n(uv run uvicorn)"
+    ]
+    
+    # Grid coordinates
+    bw, bh = 0.22, 0.15
+    cols = [0.05, 0.38, 0.71]
+    rows = [0.65, 0.25] # y_top, y_bottom
+    
+    coords = [
+        (cols[0], rows[0]), # 1: Top Left
+        (cols[1], rows[0]), # 2: Top Mid
+        (cols[2], rows[0]), # 3: Top Right
+        (cols[2], rows[1]), # 4: Bottom Right
+        (cols[1], rows[1]), # 5: Bottom Mid
+        (cols[0], rows[1]), # 6: Bottom Left
+    ]
+    
+    for i, step in enumerate(steps):
+        x, y = coords[i]
+        color = COLORS['accent'] if i == 5 else COLORS['primary']
+        add_box(ax, x, y, bw, bh, step, color, alpha=0.08)
+        
+        if i < len(steps) - 1:
+            next_x, next_y = coords[i+1]
+            
+            # Start/End center points
+            sc = (x + bw/2, y + bh/2)
+            ec = (next_x + bw/2, next_y + bh/2)
+            
+            if i == 2: # Vertical down arrow (3 -> 4)
+                add_arrow(ax, (sc[0], y), (ec[0], next_y + bh))
+            elif i < 2: # Right-pointing arrows (1->2, 2->3)
+                add_arrow(ax, (x + bw, sc[1]), (next_x, ec[1]))
+            else: # Left-pointing arrows (4->5, 5->6)
+                add_arrow(ax, (x, sc[1]), (next_x + bw, ec[1]))
+
+    plt.savefig('project_assets/images/setup_flow.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
 if __name__ == "__main__":
     print("Generating comprehensive professional visuals...")
     generate_vram_graph()
@@ -209,4 +335,6 @@ if __name__ == "__main__":
     generate_semantic_v_keyword()
     generate_cosine_similarity()
     generate_pii_redaction()
+    generate_benchmark_graph()
+    generate_setup_flow()
     print("All visuals saved to project_assets/images/")

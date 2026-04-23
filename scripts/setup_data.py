@@ -9,7 +9,7 @@ load_dotenv()
 
 # Configuration: (Dataset Ref, Target Path)
 DATASETS = [
-    ("adityarajsrv/job-descriptions-2025-tech-and-non-tech-roles", "core_engine/datasets/raw"),
+    ("ravindrasinghrana/job-description-dataset", "core_engine/datasets/raw"),
 ]
 
 

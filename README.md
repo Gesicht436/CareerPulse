@@ -12,11 +12,17 @@ In an era of data privacy concerns and automated recruitment bias, CareerPulse o
 2. **Semantic-First Alignment**: By using **SBERT (Sentence-BERT)**, the engine recognizes professional equivalence (e.g., understanding that "Cloud Orchestration" is conceptually similar to "Kubernetes Management").
 3. **Defensive Intelligence**: A dedicated security layer audits every resume for adversarial "Prompt Injection" and hidden "ATS Hacks," ensuring a clean and honest match.
 
+<img src="project_assets/images/security_pipeline.png" width="600" height="500">
+
 ---
 
 ## Unified Technical Stack
 
+<img src="project_assets/images/system_architecture.png" width="800" height="500">
+
 The project is architected as a high-performance **Modular Monolith**, split between a specialized AI backend and a modern, utility-first frontend.
+
+<img src="project_assets/images/rag_workflow.png" width="700">
 
 ### **Backend (Core Engine)**
 
@@ -83,6 +89,8 @@ CareerPulse/
 ```
 
 ---
+
+<img src="project_assets/images/setup_flow.png" width="800" height="600">
 
 ## Getting Started
 
@@ -168,5 +176,5 @@ Your application will be live at `http://localhost:3000`, communicating with the
 - **Mayank Anand**: Team Lead, Architecture, LLM Inference & UX Refinement.
 - **Abhinav Anand (285)**: Frontend Core, API Orchestration & Dashboard Logic.
 - **Harsh Anand**: UI/UX Structure & Tailwind Implementation.
-- **Abhinav Anand (08)**: Data Engineering & Vector Persistence.
-- **Ankit Anand**: Security Auditing & Performance Benchmarking.
+- **Abhinav Anand (08)**: Security Auditing & Performance Benchmarking.
+- **Ankit Anand**: Data Engineering & Vector Persistence.

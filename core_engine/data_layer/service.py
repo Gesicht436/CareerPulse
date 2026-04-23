@@ -20,7 +20,7 @@ class DataLayerService:
             query_filter = rest.Filter(
                 must=[
                     rest.FieldCondition(
-                        key="experience_level",
+                        key="experience",
                         match=rest.MatchValue(value=experience_level)
                     )
                 ]
@@ -43,10 +43,15 @@ class DataLayerService:
             job = JobDescriptionModel(
                 id=str(result.id),
                 title=payload.get("title", "Unknown Title"),
-                company="External Platform", # The dataset doesn't seem to have a company column
-                location=None,
+                company=payload.get("company", "Unknown Company"),
+                location=payload.get("location"),
+                country=payload.get("country"),
                 description=payload.get("description", ""),
-                skills=payload.get("skills", [])
+                skills=payload.get("skills", []),
+                experience=payload.get("experience"),
+                qualifications=payload.get("qualifications"),
+                salary_range=payload.get("salary_range"),
+                work_type=payload.get("work_type")
             )
             jobs.append(job)
             

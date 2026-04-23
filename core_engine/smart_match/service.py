@@ -16,8 +16,18 @@ class SmartMatchService:
         results = []
         for job in top_jobs:
             # 2. Calculate match for each job
-            # Include Title and Skills in the JD text for much better context
-            full_jd_text = f"Title: {job.title}\nRequired Skills: {', '.join(job.skills)}\nDescription: {job.description}"
+            # Include more fields in the JD text for much better context
+            full_jd_text = (
+                f"Title: {job.title}\n"
+                f"Company: {job.company}\n"
+                f"Location: {job.location}, {job.country}\n"
+                f"Experience Required: {job.experience}\n"
+                f"Qualifications: {job.qualifications}\n"
+                f"Salary Range: {job.salary_range}\n"
+                f"Work Type: {job.work_type}\n"
+                f"Required Skills: {', '.join(job.skills)}\n"
+                f"Description: {job.description}"
+            )
             req = SmartMatchRequest(resume_text=resume_text, jd_text=full_jd_text)
             match_details = await self.calculate_match(req)
             
@@ -25,6 +35,12 @@ class SmartMatchService:
                 job_id=job.id,
                 job_title=job.title,
                 company=job.company,
+                location=job.location,
+                country=job.country,
+                experience=job.experience,
+                qualifications=job.qualifications,
+                salary_range=job.salary_range,
+                work_type=job.work_type,
                 match_details=match_details
             ))
             
