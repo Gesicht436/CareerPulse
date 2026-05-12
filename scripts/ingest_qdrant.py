@@ -16,7 +16,7 @@ def ingest_data():
     print(f"DEBUG: Starting ingestion from {DATA_PATH}...")
     try:
         # The file is large, but we only read a portion if we use nrows
-        limit = 1000
+        limit = 10000
         df = pd.read_csv(DATA_PATH, nrows=limit)
     except FileNotFoundError:
         print(f"ERROR: Dataset not found at {DATA_PATH}")

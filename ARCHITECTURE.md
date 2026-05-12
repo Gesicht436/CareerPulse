@@ -57,7 +57,7 @@ The project is led by **Mayank Anand**, who oversees the end-to-end integration 
 - **Abhinav Anand (285)**: Frontend Core Development, JavaScript State Management and Responsive Design Implementation.
 - **Harsh Anand**: Frontend UI/UX Architecture, Component Structure, HTML/Tailwind Styling, and Responsive Design Implementation.
 - **Abhinav Anand (08)**: Quality Assurance, Auditing Logic, Performance Benchmarking, and Automated Testing (Unit/Integration).
-- **Ankit Anand**: Dataset Curation/Cleaning Security, Data Engineering, Data Ingestion Pipeline (ETL).
+- **Ankit Anand**: Dataset Curation/Cleaning Security, Data Engineering.
 
 ---
 
@@ -100,7 +100,7 @@ This section confirms the successfully completed and verified modules currently 
 - **[Abhinav Anand (08)]**:
   - Developed unit tests for the FastAPI backend.
 - **[Ankit Annad]**:
-  - Nothing until now
+  - Cleaned dataset.
 
 ---
 
