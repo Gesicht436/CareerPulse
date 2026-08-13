@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Analysis Dashboard — CareerPulse</title>
+    <meta name="description" content="Detailed ATS score breakdown, matched/missing skill gap analysis, AI roadmaps, and 1-on-1 mentorship session launcher." />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 flex flex-col min-h-screen antialiased">
+
+    <!-- Unified Header Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 md:px-8 py-3.5 flex justify-between items-center transition-all">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+            <div class="w-9 h-9 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-violet-600 transition-colors">
+                    Career<span class="text-violet-600">Pulse</span>
+                </span>
+                <span class="text-[10px] font-semibold text-slate-400 -mt-1 tracking-wider uppercase">Local AI Intelligence</span>
+            </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden lg:flex items-center gap-1 bg-slate-100/80 p-1 rounded-full border border-slate-200/60 text-sm font-semibold">
+            <a href="index.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">Home</a>
+            <a href="upload.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">Upload Resume</a>
+            <a href="search.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">Job Explorer</a>
+            <a href="analyzer.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">JD Analyzer</a>
+            <a href="expert_call.html" class="nav-link px-4 py-1.5 rounded-full text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition-all flex items-center gap-1.5 font-bold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>1-on-1 Mentorship</span>
+            </a>
+            <a href="dashboard.html" class="nav-link px-4 py-1.5 rounded-full text-violet-600 font-bold transition-all">Dashboard</a>
+        </div>
+
+        <!-- User Controls -->
+        <div class="flex items-center gap-3">
+            <a href="expert_call.html" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-all shadow-md shadow-violet-500/25">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <span>Book 1-on-1 Mentor</span>
+            </a>
+
+            <a href="login.html" id="user-nav-badge" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center border border-slate-200 transition-colors shadow-xs" title="Sign In / Profile">
+                <span id="user-nav-initial" class="text-xs font-bold">CP</span>
+            </a>
+
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Toggle navigation">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-slate-200 px-6 py-4 space-y-3 shadow-lg">
+        <a href="index.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">Home</a>
+        <a href="upload.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">Upload Resume</a>
+        <a href="search.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">Job Explorer</a>
+        <a href="analyzer.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">JD Analyzer</a>
+        <a href="expert_call.html" class="nav-link block py-2 text-sm font-bold text-emerald-600 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>1-on-1 Mentorship (Live Call)</span>
+        </a>
+        <a href="dashboard.html" class="nav-link block py-2 text-sm font-bold text-violet-600">Dashboard</a>
+        <div class="pt-2 border-t border-slate-100 flex flex-col gap-2">
+            <a href="login.html" class="block w-full text-center text-sm font-semibold py-2 text-slate-700 border border-slate-200 rounded-xl">Sign In / Profile</a>
+        </div>
+    </div>
+
+    <!-- Dashboard Main Container -->
+    <main class="grow max-w-6xl mx-auto px-6 py-10 w-full">
+
+        <!-- Prominent 1-on-1 Expert Mentorship Callout Banner -->
+        <div class="mb-8 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 md:p-8 text-white border border-slate-800 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div class="absolute right-0 top-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <div class="space-y-2 relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>1-on-1 Industry Mentorship</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white">Want to discuss your skill gaps with a mentor?</h2>
+                <p class="text-slate-300 text-xs md:text-sm max-w-2xl">
+                    Connect directly on a live WebRTC audio/video call. Your mentor will receive your complete AI Briefing Dossier automatically.
+                </p>
+            </div>
+            <a href="expert_call.html" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-6 py-3 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all flex items-center gap-2 text-sm relative z-10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                <span>Launch 1-on-1 Call</span>
+            </a>
+        </div>
+
+        <!-- Target Job Overview Header Card -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <div class="text-xs font-bold uppercase tracking-wider text-violet-600 mb-1">Target Role Evaluation</div>
+                    <h1 id="job-title" class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Senior Python Developer</h1>
+                    <p id="company-name" class="text-slate-500 text-sm font-medium mt-1">TechCorp Industries</p>
+                </div>
+
+                <!-- Job Metadata Badges -->
+                <div class="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
+                    <span id="job-location" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Remote / Hybrid
+                    </span>
+                    <span id="salary-range" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        $120,000 - $150,000
+                    </span>
+                    <span id="experience-level" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-xl border border-slate-200">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Senior Level (4+ Yrs)
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 AI Job Recommendations Section -->
+        <div class="mb-8 bg-slate-900/90 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4 border-b border-slate-800 pb-6">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-500/30">
+                            🎯 AI Vector Recommendation Engine
+                        </span>
+                        <span id="qual-filter-badge" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
+                            🎓 Qualification Filter: STRICT (B.Tech / B.E.)
+                        </span>
+                    </div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-white tracking-tight">Top 5 Matched Job Recommendations</h2>
+                    <p id="qual-filter-desc" class="text-xs text-slate-400 mt-1">Recommendations restricted strictly to jobs requiring your educational field.</p>
+                </div>
+
+                <!-- Educational Qualification Filter Toggle Button -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <button id="toggle-qual-filter-btn" class="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-extrabold shadow-lg shadow-violet-600/30 transition-all flex items-center gap-2 border border-violet-400/40">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0v4m-8 0H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2h-3m-8 0h8"/></svg>
+                        <span id="toggle-qual-btn-text">Disable Qualification Filter (Show All Fields)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="top-5-recommendations-container" class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- Dynamically populated via dashboard.js -->
+            </div>
+        </div>
+
+        <!-- 2-Column Grid: Score & Justification (Left) vs Skills (Right) -->
+        <div class="grid lg:grid-cols-12 gap-8 mb-8">
+            
+            <!-- Radial ATS Score & Justification (Cols 5) -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-extrabold text-slate-900 text-lg">Overall ATS Match Score</h3>
+                        <span class="text-[11px] font-bold text-violet-600 bg-violet-50 px-2.5 py-1 rounded-full">SBERT 384D Similarity</span>
+                    </div>
+
+                    <!-- Circular Progress Ring Display -->
+                    <div class="flex justify-center my-6">
+                        <div class="relative w-40 h-40 rounded-full bg-gradient-to-tr from-violet-600 to-teal-400 p-2 shadow-xl flex items-center justify-center">
+                            <div class="w-full h-full bg-white rounded-full flex flex-col items-center justify-center text-center">
+                                <span id="score-ring" class="text-4xl font-extrabold text-slate-900">85%</span>
+                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Matched</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Rationale List -->
+                <div class="mt-6 pt-6 border-t border-slate-100 space-y-3">
+                    <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-2">Score Rationale Breakdown</h4>
+                    <div id="justification-list" class="space-y-2">
+                        <div class="flex gap-3 text-xs text-slate-600">
+                            <span class="text-teal-600 font-bold">✓</span>
+                            <span>Strong technical overlap in Python, FastAPI, and Docker.</span>
+                        </div>
+                        <div class="flex gap-3 text-xs text-slate-600">
+                            <span class="text-teal-600 font-bold">✓</span>
+                            <span>Demonstrated leadership experience matches senior requirements.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matched & Missing Skills Cards (Cols 7) -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Matched Technical Competencies -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-3 h-3 rounded-full bg-teal-500"></div>
+                        <h3 class="font-bold text-slate-900 text-base">Verified Technical Strengths</h3>
+                    </div>
+                    <div id="matched-skills" class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-full text-xs font-bold border border-teal-100">Python</span>
+                        <span class="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-full text-xs font-bold border border-teal-100">FastAPI</span>
+                        <span class="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-full text-xs font-bold border border-teal-100">Docker</span>
+                        <span class="px-3 py-1.5 bg-teal-50 text-teal-700 rounded-full text-xs font-bold border border-teal-100">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <!-- Missing Skill Gaps & 1-on-1 Practice Action -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                            <h3 class="font-bold text-slate-900 text-base">Missing Skill Gaps to Bridge</h3>
+                        </div>
+                        <a href="expert_call.html" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                            <span>Discuss in 1-on-1 Call</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                    <div id="missing-skills" class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-full text-xs font-bold border border-rose-100">Kubernetes</span>
+                        <span class="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-full text-xs font-bold border border-rose-100">GraphQL</span>
+                        <span class="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-full text-xs font-bold border border-rose-100">Kafka</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-500 flex items-center justify-between">
+                        <span>💡 Practice these missing skills with a live mentor on WebRTC</span>
+                        <a href="expert_call.html" class="font-bold text-violet-600 hover:underline">Book Mentor</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI-Generated 4-Week Career Roadmap -->
+        <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 text-white rounded-3xl p-8 border border-slate-800 shadow-2xl">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-500/30 mb-2">
+                        🤖 Local Qwen 2.5 LLM Pathfinding
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-white tracking-tight">Your 4-Week Actionable Skill Roadmap</h2>
+                </div>
+                <a href="expert_call.html" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-md">
+                    Get Roadmap Mentoring
+                </a>
+            </div>
+
+            <!-- Roadmap Timeline Container -->
+            <div id="roadmap-container" class="space-y-6">
+                <!-- Timeline item sample -->
+                <div class="relative pl-8 border-l-2 border-slate-700 pb-4">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-violet-500 shadow-lg shadow-violet-500/50"></div>
+                    <h4 class="font-bold text-violet-400 text-xs uppercase tracking-widest mb-1">Week 1</h4>
+                    <h3 class="font-bold text-base text-white mb-1">Master Kubernetes Fundamentals & Deployment</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-3xl">Set up local Minikube cluster, build containerized pod manifests, and manage deployments.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Job Description Inspection Modal -->
+    <div id="job-inspect-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="p-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-start justify-between relative overflow-hidden">
+                <div class="space-y-1 relative z-10">
+                    <div class="flex items-center gap-2">
+                        <span id="modal-match-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">92% Match</span>
+                        <span id="modal-work-type" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">Full-time</span>
+                    </div>
+                    <h2 id="modal-job-title" class="text-2xl font-extrabold text-white tracking-tight mt-1">Software Engineer</h2>
+                    <p id="modal-company" class="text-violet-300 text-sm font-medium">Company Name</p>
+                </div>
+                <button id="close-modal-btn" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors relative z-10" aria-label="Close modal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 overflow-y-auto space-y-6 text-slate-700 max-h-[60vh]">
+                <!-- Job Metadata Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+                    <div>
+                        <span class="block text-slate-400 font-medium">Location</span>
+                        <span id="modal-location" class="font-bold text-slate-900">San Francisco, CA</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 font-medium">Experience</span>
+                        <span id="modal-experience" class="font-bold text-slate-900">3+ Years</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 font-medium">Salary Range</span>
+                        <span id="modal-salary" class="font-bold text-slate-900">$120,000 - $150,000</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 font-medium">Qualifications</span>
+                        <span id="modal-qualifications" class="font-bold text-slate-900">Bachelor's Degree</span>
+                    </div>
+                </div>
+
+                <!-- Full Job Description -->
+                <div>
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-violet-600 mb-2">Full Job Description & Responsibilities</h3>
+                    <p id="modal-description" class="text-sm text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        Detailed job description text will be loaded here...
+                    </p>
+                </div>
+
+                <!-- Required & Matched Skills -->
+                <div>
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-900 mb-2">Required Skills for this Role</h3>
+                    <div id="modal-skills" class="flex flex-wrap gap-2">
+                        <!-- Skill tags -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                <button id="modal-footer-close-btn" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+                    Close
+                </button>
+                <div class="flex items-center gap-3">
+                    <a href="analyzer.html" class="px-4 py-2 text-xs font-bold text-violet-600 bg-violet-50 hover:bg-violet-100 rounded-xl border border-violet-200 transition-colors">
+                        Custom JD Analyzer
+                    </a>
+                    <a href="expert_call.html" class="px-5 py-2 text-xs font-extrabold text-slate-950 bg-emerald-400 hover:bg-emerald-500 rounded-xl shadow-md transition-all flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <span>Book 1-on-1 Mentor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unified Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+            <div class="flex items-center gap-2 text-white font-extrabold">
+                <div class="w-6 h-6 bg-violet-600 rounded flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <span>CareerPulse</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="index.html" class="hover:text-slate-300">Home</a>
+                <a href="expert_call.html" class="text-emerald-400 font-bold hover:text-emerald-300">1-on-1 Mentorship</a>
+                <a href="search.html" class="hover:text-slate-300">Job Search</a>
+                <a href="upload.html" class="hover:text-slate-300">Upload Resume</a>
+                <a href="admin.html" class="text-violet-400 font-semibold hover:text-violet-300">Admin Console</a>
+            </div>
+            <p>© 2026 CareerPulse.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js" type="module"></script>
+    <script src="js/dashboard.js" type="module"></script>
+</body>
+
+</html>

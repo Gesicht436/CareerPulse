@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Market Explorer — CareerPulse</title>
+    <meta name="description" content="Natural language semantic job discovery powered by 384-dimensional SBERT embeddings and Qdrant vector retrieval." />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 flex flex-col min-h-screen antialiased">
+
+    <!-- Unified Header Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 md:px-8 py-3.5 flex justify-between items-center transition-all">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+            <div class="w-9 h-9 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-violet-600 transition-colors">
+                    Career<span class="text-violet-600">Pulse</span>
+                </span>
+                <span class="text-[10px] font-semibold text-slate-400 -mt-1 tracking-wider uppercase">Local AI Intelligence</span>
+            </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden lg:flex items-center gap-1 bg-slate-100/80 p-1 rounded-full border border-slate-200/60 text-sm font-semibold">
+            <a href="index.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">Home</a>
+            <a href="upload.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">Upload Resume</a>
+            <a href="search.html" class="nav-link px-4 py-1.5 rounded-full text-violet-600 font-bold transition-all">Job Explorer</a>
+            <a href="analyzer.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">JD Analyzer</a>
+            <a href="expert_call.html" class="nav-link px-4 py-1.5 rounded-full text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition-all flex items-center gap-1.5 font-bold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>1-on-1 Mentorship</span>
+            </a>
+            <a href="dashboard.html" class="nav-link px-4 py-1.5 rounded-full text-slate-600 hover:text-violet-600 transition-all">Dashboard</a>
+        </div>
+
+        <!-- User Controls -->
+        <div class="flex items-center gap-3">
+            <a href="expert_call.html" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-full transition-all shadow-md shadow-violet-500/25">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <span>Book 1-on-1 Mentor</span>
+            </a>
+
+            <a href="login.html" id="user-nav-badge" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center border border-slate-200 transition-colors shadow-xs" title="Sign In / Profile">
+                <span id="user-nav-initial" class="text-xs font-bold">CP</span>
+            </a>
+
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Toggle navigation">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-slate-200 px-6 py-4 space-y-3 shadow-lg">
+        <a href="index.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">Home</a>
+        <a href="upload.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">Upload Resume</a>
+        <a href="search.html" class="nav-link block py-2 text-sm font-bold text-violet-600">Job Explorer</a>
+        <a href="analyzer.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">JD Analyzer</a>
+        <a href="expert_call.html" class="nav-link block py-2 text-sm font-bold text-emerald-600 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>1-on-1 Mentorship (Live Call)</span>
+        </a>
+        <a href="dashboard.html" class="nav-link block py-2 text-sm font-semibold text-slate-700 hover:text-violet-600">Dashboard</a>
+        <div class="pt-2 border-t border-slate-100 flex flex-col gap-2">
+            <a href="login.html" class="block w-full text-center text-sm font-semibold py-2 text-slate-700 border border-slate-200 rounded-xl">Sign In / Profile</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="grow max-w-6xl mx-auto px-6 py-12 w-full">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100 uppercase tracking-wider mb-3">
+                🔍 Qdrant Sub-Millisecond Vector Discovery
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Semantic Job Market Explorer</h1>
+            <p class="text-slate-500 text-sm">Discover high-matching positions using natural language career queries.</p>
+        </header>
+
+        <!-- Search Bar with Query Chips -->
+        <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-md mb-8">
+            <div class="relative flex items-center">
+                <svg class="w-5 h-5 text-slate-400 absolute left-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" placeholder="e.g. Python FastAPI developer with Docker and Kubernetes experience..."
+                    class="w-full pl-12 pr-32 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-violet-500 text-sm text-slate-900">
+                <button class="absolute right-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md">
+                    Search Jobs
+                </button>
+            </div>
+
+            <!-- Quick Natural Language Filter Chips -->
+            <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-slate-100 text-xs">
+                <span class="text-slate-400 font-medium mr-1">Popular:</span>
+                <button class="px-3 py-1 bg-slate-100 hover:bg-violet-50 hover:text-violet-600 text-slate-600 rounded-full font-semibold transition-colors">Python FastAPI</button>
+                <button class="px-3 py-1 bg-slate-100 hover:bg-violet-50 hover:text-violet-600 text-slate-600 rounded-full font-semibold transition-colors">ML Engineer CUDA</button>
+                <button class="px-3 py-1 bg-slate-100 hover:bg-violet-50 hover:text-violet-600 text-slate-600 rounded-full font-semibold transition-colors">DevOps Cloud</button>
+                <button class="px-3 py-1 bg-slate-100 hover:bg-violet-50 hover:text-violet-600 text-slate-600 rounded-full font-semibold transition-colors">Remote Senior</button>
+            </div>
+        </div>
+
+        <!-- Job Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Job Card 1 -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center font-extrabold text-sm border border-violet-100">
+                            TF
+                        </div>
+                        <span class="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-extrabold border border-teal-100 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> 92% Match
+                        </span>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-violet-600 transition-colors">Senior Python Backend Engineer</h3>
+                    <p class="text-slate-500 text-xs font-semibold mb-4">TechFlow Labs • Remote</p>
+
+                    <div class="flex flex-wrap gap-1.5 mb-6">
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">Python</span>
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">FastAPI</span>
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">Qdrant</span>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 space-y-3">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-800">
+                        <span>$140,000 - $170,000</span>
+                        <span class="text-slate-400 font-normal">Posted 2d ago</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="details.html" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs text-center transition-colors">
+                            View Details
+                        </a>
+                        <a href="expert_call.html" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-2 rounded-xl text-xs text-center border border-emerald-200 transition-colors">
+                            1-on-1 Advisory
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Card 2 -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-extrabold text-sm border border-indigo-100">
+                            AI
+                        </div>
+                        <span class="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-extrabold border border-teal-100 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> 88% Match
+                        </span>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors">Applied Machine Learning Engineer</h3>
+                    <p class="text-slate-500 text-xs font-semibold mb-4">NeuralMatrix • Hybrid</p>
+
+                    <div class="flex flex-wrap gap-1.5 mb-6">
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">PyTorch</span>
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">CUDA</span>
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">SBERT</span>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 space-y-3">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-800">
+                        <span>$160,000 - $190,000</span>
+                        <span class="text-slate-400 font-normal">Posted 1d ago</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="details.html" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs text-center transition-colors">
+                            View Details
+                        </a>
+                        <a href="expert_call.html" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-2 rounded-xl text-xs text-center border border-emerald-200 transition-colors">
+                            1-on-1 Advisory
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Card 3 (Mentorship Invitation) -->
+            <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-6 rounded-3xl border border-slate-800 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-4 border border-emerald-500/30">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 text-[10px] font-bold rounded-full border border-emerald-500/30 uppercase tracking-wider">Live Expert Support</span>
+                    <h3 class="text-lg font-extrabold text-white mt-2 mb-2">Need Guidance on Target Roles?</h3>
+                    <p class="text-slate-300 text-xs leading-relaxed mb-4">Book a live WebRTC video call with an industry expert to evaluate these job postings and practice technical interview questions.</p>
+                </div>
+                <a href="expert_call.html" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold py-3 rounded-xl text-xs text-center transition-all shadow-lg shadow-emerald-500/20">
+                    Book 1-on-1 Mentorship Stage
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Unified Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+            <div class="flex items-center gap-2 text-white font-extrabold">
+                <div class="w-6 h-6 bg-violet-600 rounded flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <span>CareerPulse</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="index.html" class="hover:text-slate-300">Home</a>
+                <a href="expert_call.html" class="text-emerald-400 font-bold hover:text-emerald-300">1-on-1 Mentorship</a>
+                <a href="upload.html" class="hover:text-slate-300">Upload Resume</a>
+                <a href="dashboard.html" class="hover:text-slate-300">Dashboard</a>
+                <a href="admin.html" class="text-violet-400 font-semibold hover:text-violet-300">Admin Console</a>
+            </div>
+            <p>© 2026 CareerPulse.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js" type="module"></script>
+</body>
+
+</html>

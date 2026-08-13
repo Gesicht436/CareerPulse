@@ -1,0 +1,46 @@
+{
+  "usr_3ae4c5b86563d442": {
+    "id": "usr_3ae4c5b86563d442",
+    "full_name": "Test Candidate",
+    "email": "test_1786126080@example.com",
+    "password_hash": "afbce9da6abe8424b72e2197175f1b151c5ad5b4245f1b0b552bce4a22cb03a6",
+    "salt": "fb57adc409017c24f0f47d42bfd906a6",
+    "created_at": "2026-08-07T18:08:00.630638Z"
+  },
+  "usr_admin_master": {
+    "id": "usr_admin_master",
+    "full_name": "System Administrator",
+    "email": "admin@careerpulse.ai",
+    "password_hash": "59baf225ab2439c2f0c6b4bd4fef237de175301f76c77b194a6f51e4363f5180",
+    "salt": "ea104433cd0bfe08da3d2ab627737624",
+    "role": "admin",
+    "created_at": "2026-08-08T03:07:31.156337+00:00"
+  },
+  "usr_929a3c38086c6361": {
+    "id": "usr_929a3c38086c6361",
+    "full_name": "Test Candidate",
+    "email": "test_1786616606@example.com",
+    "password_hash": "dd97427c853e298995fe3056d91aefcff26454070838e68fb8f6becb9162a425",
+    "salt": "063e9f06503b534bd393be01bf1fc021",
+    "role": "user",
+    "created_at": "2026-08-13T10:23:26.998130+00:00"
+  },
+  "usr_d700c37ea6920e33": {
+    "id": "usr_d700c37ea6920e33",
+    "full_name": "Test Candidate",
+    "email": "test_1786616652@example.com",
+    "password_hash": "ee8a2595ac21d0b55eafd345a33209f63e106da30ad87fc611b6be960066233c",
+    "salt": "f546df4d2a40d6b2b98ae42ed81bff96",
+    "role": "user",
+    "created_at": "2026-08-13T10:24:12.511258+00:00"
+  },
+  "usr_5576a9de9f0027af": {
+    "id": "usr_5576a9de9f0027af",
+    "full_name": "Test Candidate",
+    "email": "test_1786616877@example.com",
+    "password_hash": "927342a175bcd4f48f7fba82c983c8d5bf420aabbf1c29a59e68ed32715928b7",
+    "salt": "495433c3095ce5b9fb462e8be84ea69f",
+    "role": "user",
+    "created_at": "2026-08-13T10:27:57.070842+00:00"
+  }
+}

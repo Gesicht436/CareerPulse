@@ -1,0 +1,23 @@
+{
+  "name": "careerpulse-web",
+  "version": "1.0.0",
+  "description": "Frontend for CareerPulse",
+  "type": "module",
+  "scripts": {
+    "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/style.css",
+    "watch:css": "tailwindcss -i ./public/css/input.css -o ./public/css/style.css --watch",
+    "serve": "live-server public",
+    "dev": "concurrently \"npm run watch:css\" \"npm run serve\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "live-server": "^1.2.1",
+    "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

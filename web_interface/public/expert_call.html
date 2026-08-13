@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPulse — Live 1-on-1 Expert Mentorship Stage</title>
+    <meta name="description" content="Connect directly with senior industry mentors via native low-latency WebRTC video call with automated AI Candidate Briefing Dossier." />
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Unified Top Navigation Header -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 md:px-8 py-3.5 flex justify-between items-center transition-all">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+            <div class="w-9 h-9 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-tight text-white group-hover:text-violet-400 transition-colors">
+                    Career<span class="text-violet-400">Pulse</span>
+                </span>
+                <span class="text-[10px] font-semibold text-slate-400 -mt-1 tracking-wider uppercase">1-on-1 Live Stage</span>
+            </div>
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden lg:flex items-center gap-1 bg-slate-800/80 p-1 rounded-full border border-slate-700/60 text-sm font-semibold">
+            <a href="index.html" class="nav-link px-4 py-1.5 rounded-full text-slate-300 hover:text-white transition-all">Home</a>
+            <a href="upload.html" class="nav-link px-4 py-1.5 rounded-full text-slate-300 hover:text-white transition-all">Upload Resume</a>
+            <a href="search.html" class="nav-link px-4 py-1.5 rounded-full text-slate-300 hover:text-white transition-all">Job Explorer</a>
+            <a href="analyzer.html" class="nav-link px-4 py-1.5 rounded-full text-slate-300 hover:text-white transition-all">JD Analyzer</a>
+            <a href="expert_call.html" class="nav-link px-4 py-1.5 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 font-bold transition-all flex items-center gap-1.5 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>1-on-1 Mentorship</span>
+            </a>
+            <a href="dashboard.html" class="nav-link px-4 py-1.5 rounded-full text-slate-300 hover:text-white transition-all">Dashboard</a>
+        </div>
+
+        <!-- Session Controls -->
+        <div class="flex items-center space-x-4">
+            <div class="text-right hidden sm:block">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-semibold text-slate-300" id="session-status">Initializing WebRTC...</span>
+                </div>
+                <p class="text-[11px] font-mono font-bold text-violet-400" id="room-id-display">Loading Room...</p>
+            </div>
+
+            <button id="end-call-top-btn" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-rose-900/40 flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z"/></svg>
+                <span>Leave Call</span>
+            </button>
+
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 transition-colors" aria-label="Toggle navigation">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-slate-900 border-b border-slate-800 px-6 py-4 space-y-3 shadow-lg">
+        <a href="index.html" class="nav-link block py-2 text-sm font-semibold text-slate-300 hover:text-white">Home</a>
+        <a href="upload.html" class="nav-link block py-2 text-sm font-semibold text-slate-300 hover:text-white">Upload Resume</a>
+        <a href="search.html" class="nav-link block py-2 text-sm font-semibold text-slate-300 hover:text-white">Job Explorer</a>
+        <a href="analyzer.html" class="nav-link block py-2 text-sm font-semibold text-slate-300 hover:text-white">JD Analyzer</a>
+        <a href="expert_call.html" class="nav-link block py-2 text-sm font-bold text-emerald-400 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>1-on-1 Mentorship (Live Call)</span>
+        </a>
+        <a href="dashboard.html" class="nav-link block py-2 text-sm font-semibold text-slate-300 hover:text-white">Dashboard</a>
+    </div>
+
+    <!-- Main Live Interaction Stage -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 max-w-[1700px] w-full mx-auto">
+        
+        <!-- Video & Audio Stream Stage (Cols 8) -->
+        <section class="lg:col-span-8 flex flex-col justify-between space-y-4">
+            
+            <!-- Video Canvas Viewport -->
+            <div class="relative bg-slate-950 rounded-3xl overflow-hidden border border-slate-800 aspect-video shadow-2xl flex items-center justify-center group">
+                
+                <!-- Remote Video Stream (Main Feed) -->
+                <video id="remote-video" autoplay playsinline class="w-full h-full object-cover"></video>
+
+                <!-- Waiting Placeholder overlay when no peer is connected -->
+                <div id="video-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-8 text-center space-y-4">
+                    <div class="w-20 h-20 rounded-full bg-violet-600/20 border border-violet-500/30 flex items-center justify-center animate-pulse shadow-lg shadow-violet-500/20">
+                        <svg class="w-10 h-10 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Waiting for Industry Expert to Join...</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">Your peer-to-peer WebRTC 1-on-1 room is active. Share your room link or wait for your mentor to connect.</p>
+                    </div>
+                </div>
+
+                <!-- Local Self-View Video (Picture-in-Picture) -->
+                <div class="absolute bottom-4 right-4 w-40 sm:w-56 aspect-video bg-slate-900 rounded-2xl overflow-hidden border-2 border-violet-500/50 shadow-2xl z-20">
+                    <video id="local-video" autoplay playsinline muted class="w-full h-full object-cover scale-x-[-1]"></video>
+                    <span class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur px-2 py-0.5 rounded text-[10px] font-bold text-slate-300">You (Candidate)</span>
+                </div>
+            </div>
+
+            <!-- In-Call Control Bar -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between shadow-xl gap-4">
+                <div class="flex items-center space-x-3">
+                    <button id="toggle-mic-btn" class="w-12 h-12 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-all border border-slate-700">
+                        <svg id="mic-on-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                    </button>
+                    <button id="toggle-cam-btn" class="w-12 h-12 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-all border border-slate-700">
+                        <svg id="cam-on-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-semibold text-slate-400 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">🔒 Encrypted P2P WebRTC</span>
+                    <button id="end-call-main-btn" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-rose-900/30 flex items-center space-x-2 text-xs">
+                        <span>End Session</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side Panel: AI Briefing Dossier & In-Call Chat (Cols 4) -->
+        <aside class="lg:col-span-4 bg-slate-900/90 border border-slate-800 rounded-3xl flex flex-col overflow-hidden shadow-2xl h-[650px] lg:h-auto">
+            
+            <!-- Tab Headers -->
+            <div class="flex border-b border-slate-800 bg-slate-950/60">
+                <button id="tab-briefing-btn" class="flex-1 py-3.5 px-4 text-xs font-bold uppercase tracking-wider text-violet-400 border-b-2 border-violet-500 transition-colors flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>AI Dossier</span>
+                </button>
+                <button id="tab-chat-btn" class="flex-1 py-3.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-colors flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    <span>Live Chat</span>
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Expert AI Briefing Dossier -->
+            <div id="tab-briefing-content" class="flex-1 overflow-y-auto p-5 space-y-6">
+                
+                <!-- Candidate Briefing Summary Header -->
+                <div class="bg-violet-950/40 border border-violet-500/30 rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-violet-400 uppercase tracking-widest">Candidate Briefing</span>
+                        <span id="briefing-score-badge" class="bg-violet-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">Match: 85%</span>
+                    </div>
+                    <h4 id="briefing-candidate-name" class="font-bold text-lg text-white mb-1">Candidate Dossier</h4>
+                    <p id="briefing-target-role" class="text-xs text-slate-400">Target Role: Senior Developer</p>
+                </div>
+
+                <!-- Matched vs Missing Skill Breakdown -->
+                <div>
+                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Verified Skill Overlaps</h5>
+                    <div id="briefing-matched-skills" class="flex flex-wrap gap-1.5 mb-4">
+                        <span class="text-xs bg-teal-950 text-teal-300 border border-teal-800 px-2 py-0.5 rounded">Python</span>
+                        <span class="text-xs bg-teal-950 text-teal-300 border border-teal-800 px-2 py-0.5 rounded">FastAPI</span>
+                    </div>
+
+                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Key Skill Gaps (To Discuss)</h5>
+                    <div id="briefing-missing-skills" class="flex flex-wrap gap-1.5">
+                        <span class="text-xs bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded">Kubernetes</span>
+                        <span class="text-xs bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded">Kafka</span>
+                    </div>
+                </div>
+
+                <!-- AI Recommended Key Discussion Points -->
+                <div>
+                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">AI Recommended Mentor Agenda</h5>
+                    <ul id="briefing-discussion-points" class="space-y-2 text-xs text-slate-300">
+                        <li class="bg-slate-950 p-3 rounded-xl border border-slate-800 leading-relaxed">• Review candidate's hands-on container orchestration project experience.</li>
+                        <li class="bg-slate-950 p-3 rounded-xl border border-slate-800 leading-relaxed">• Provide mock architectural question on event-driven streaming with Kafka.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Real-Time In-Call Chat -->
+            <div id="tab-chat-content" class="flex-1 flex flex-col hidden h-full">
+                <!-- Chat Message Stream -->
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 font-sans">
+                    <div class="text-center text-xs text-slate-500 my-2">Session connected. Messages are private and end-to-end encrypted over P2P.</div>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form id="chat-form" class="p-3 bg-slate-950 border-t border-slate-800 flex items-center space-x-2">
+                    <input type="text" id="chat-input" placeholder="Type a message..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors">
+                    <button type="submit" class="bg-violet-600 hover:bg-violet-700 text-white p-2.5 rounded-xl transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    </button>
+                </form>
+            </div>
+        </aside>
+    </main>
+
+    <script src="js/main.js" type="module"></script>
+    <script src="js/expert_call.js" type="module"></script>
+</body>
+</html>
