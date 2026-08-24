@@ -28,18 +28,18 @@ dependencies = [
     "sentence-transformers>=5.4.1",
     "spacy>=3.8.14",
     "tiktoken>=0.12.0",
-    "torch==2.10.0+cu130",
-    "torchvision==0.25.0+cu130",
+    "torch",
+    "torchvision",
     "transformers>=5.5.4",
     "uvicorn>=0.44.0",
 ]
 
 [[tool.uv.index]]
-name = "pytorch-cu130"
-url = "https://download.pytorch.org/whl/cu130"
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
 explicit = true
 
 [tool.uv.sources]
-torch = [{ index = "pytorch-cu130" }]
-torchvision = [{ index = "pytorch-cu130" }]
+torch = [{ index = "pytorch-cu132" }]
+torchvision = [{ index = "pytorch-cu132" }]
 en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }

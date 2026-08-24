@@ -42,8 +42,10 @@ class DataLayerService:
         print(f"DEBUG: SQLite database empty. Initializing and parsing dataset from '{DATASET_CSV_PATH}'...")
         jobs = []
         if not os.path.exists(DATASET_CSV_PATH):
-            print(f"ERROR: Dataset CSV file not found at '{DATASET_CSV_PATH}'")
-            return jobs
+            raise FileNotFoundError(
+                f"Job database 'jobs.db' is empty and dataset CSV was not found at '{DATASET_CSV_PATH}'. "
+                "Please run 'python scripts/setup_data.py' and 'python scripts/ingest_qdrant.py' to initialize the database."
+            )
 
         try:
             chunk_df = pd.read_csv(DATASET_CSV_PATH, nrows=150000)
@@ -84,9 +86,9 @@ class DataLayerService:
             print(f"DEBUG: Successfully indexed and saved {len(jobs)} job postings into SQLite.")
         except Exception as e:
             print(f"ERROR reading job_descriptions.csv: {e}")
-            self._cached_dataset_jobs = []
+            raise RuntimeError(f"Failed to parse and seed job database from '{DATASET_CSV_PATH}': {str(e)}") from e
 
-        return self._cached_dataset_jobs or []
+        return self._cached_dataset_jobs
 
     def _get_dataset_embeddings(self, jobs: List[JobDescriptionModel]):
         """
@@ -131,12 +133,13 @@ class DataLayerService:
         If strict_qualification=True, filters jobs matching the candidate's educational degree.
         """
         headline_query = query_text[:400]
-        query_headline_emb = embedding_service.encode(headline_query)
-        query_full_emb = embedding_service.encode(query_text)
+        query_embs = embedding_service.encode([headline_query, query_text], batch_size=2)
+        query_headline_emb = query_embs[0]
+        query_full_emb = query_embs[1]
 
         dataset_jobs = self._load_real_dataset_jobs()
         if not dataset_jobs:
-            return []
+            raise RuntimeError("Job dataset is empty. Please verify database initialization.")
 
         # Filter candidate jobs by educational qualification if strict_qualification=True
         candidate_jobs = dataset_jobs
@@ -168,7 +171,7 @@ class DataLayerService:
                 candidate_jobs = [job for _, job in filtered_pairs]
                 print(f"DEBUG: Educational Qualification Filter ACTIVE ('{qualification}'): Retained {len(candidate_jobs)} matching jobs.")
             else:
-                print(f"DEBUG: Educational Qualification Filter ('{qualification}') yielded 0 matches; showing all roles.")
+                raise ValueError(f"No job descriptions matching qualification '{qualification}' were found in the database.")
 
         dataset_embeddings = self._get_dataset_embeddings(dataset_jobs)
         filtered_embeddings = dataset_embeddings[candidate_indices]

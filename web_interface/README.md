@@ -1,72 +1,68 @@
 # CareerPulse Web Interface: Modern Professional Dashboard & Admin Portal
 
-The **Web Interface** is the interactive gateway to the CareerPulse ecosystem. It provides a seamless, highly responsive, and visually intuitive experience for job seekers and system administrators, transforming complex AI-driven data into actionable career insights, user authentication, top 5 job recommendations, full job description inspection modals, live announcement banners, and real-time WebRTC mentoring stages.
+The **Web Interface** is the presentation layer of the CareerPulse ecosystem. It delivers an intuitive, responsive, and aesthetically polished user experience for job seekers and system administrators, transforming complex AI-driven career telemetry into actionable insights, top 5 job recommendations, interactive job inspection modals, live announcement banners, and real-time WebRTC mentoring stages.
 
 ---
 
-## Development & UI/UX Philosophy
+## 1. Design & UI/UX Philosophy
 
-The web interface is engineered by **Mayank Anand** with a focus on functional reliability, stateful API integration, and aesthetic precision:
-
-- **Color Palette & Typography**: Professional violet, slate, and teal tones paired with high-readability Inter sans-serif fonts.
-- **Component Geometry**: Precise control over corner rounding (`border-radius`), glassmorphic panels, and elevated card shadows.
-- **Interactive Feedback**: Smooth hover transitions, live progress bars, tab switchers, inspection modals, qualification filter toggles, and responsive stage layouts.
+The interface is engineered with a focus on functional reliability, stateful API integration, and aesthetic precision:
+- **Design System & Palette**: Slate backgrounds, deep violet brand accents, teal/emerald success indicators, and rose skill gap badges.
+- **Typography & Geometry**: Clean Inter sans-serif typography paired with large rounded card geometry (`rounded-2xl`, `rounded-3xl`) and multi-layered elevation shadows.
+- **Interactive Feedback**: Smooth CSS transitions, file drag-and-drop zones, live radial score rings, dynamic qualification filter toggling, and interactive modal dialogs.
 
 ---
 
-## Technical Architecture
+## 2. Technical Stack
 
-Built as a **High-Performance Web Application** utilizing utility-first styling with Tailwind CSS v4 and modern ES6+ Vanilla JavaScript.
+- **Styling Engine:** Tailwind CSS v4 (`@tailwindcss/cli`)
+- **Scripting:** Vanilla JavaScript (ES6+ Modules, zero third-party client framework dependencies)
+- **Real-Time Communications:** Native Browser WebSockets & `RTCPeerConnection` (WebRTC)
+- **Build & Development Server:** `concurrently` listening to Tailwind CSS watcher and `live-server`
 
-### 1. Styling Framework: Tailwind CSS v4
+---
 
-- **`input.css`**: Source file for custom Tailwind directives, glassmorphism utilities (`glass-panel`), and custom scrollbars.
-- **`style.css`**: Compiled output consumed by the browser.
-- **Design Tokens**: Standardized design tokens across colors, border radii, and elevated card shadows.
+## 3. Page Ecosystem (HTML Structure)
 
-### 2. Page Ecosystem (HTML Structure)
+| Page | File | Purpose |
+| :--- | :--- | :--- |
+| **Landing Page** | `public/index.html` | Hero overview, feature grid, live telemetry counters, and 1-on-1 mentorship spotlight |
+| **Authentication Hub** | `public/login.html` | Interactive Sign-In and Sign-Up tab switcher with JWT session handling |
+| **Admin Control Portal** | `public/admin.html` | Admin login, live hardware telemetry (CPU, RAM, Uptime), announcement publisher, feature toggles, user table, and activity audit feed |
+| **Resume Upload Portal** | `public/upload.html` | Drag-and-drop PDF resume upload zone with upload progress animation |
+| **Analysis Dashboard** | `public/dashboard.html` | Top 5 job match cards, radial ATS score ring, qualification filter toggle button, `#job-inspect-modal`, skill gap badges, and 4-week roadmap |
+| **Direct JD Match Tool** | `public/analyzer.html` | Direct comparison tool for pasting custom job description text |
+| **Semantic Job Search** | `public/search.html` | Natural language semantic job search querying the local database |
+| **Job Details View** | `public/details.html` | Unabridged job description and candidate alignment profile |
+| **Live WebRTC Stage** | `public/expert_call.html` | 1-on-1 video call room with real-time chat and live AI Briefing Dossier sidebar |
 
-- **`index.html` (Landing Page)**: Introduces CareerPulse capabilities with interactive tool cards, telemetry counters, and 1-on-1 mentorship spotlight.
-- **`login.html` (Authentication Hub)**: Interactive Sign-In and Sign-Up tab switcher interface with real-time alert banners.
-- **`admin.html` (Admin Control Hub)**: Admin login modal (`admin@careerpulse.ai`), telemetry metrics dashboard, live announcement banner publisher, feature flags toggling, candidate user table, and activity audit feed.
-- **`upload.html` (Ingestion Hub)**: Drag-and-drop resume upload zone with live upload progress feedback.
-- **`dashboard.html` (Career Dashboard)**: Top 5 recommendation cards, educational qualification filter control bar with toggle button, `#job-inspect-modal` full job description modal, radial ATS score ring, strategic justifications, skill gap badges, and 4-week roadmap timeline.
-- **`analyzer.html` (Direct Job Match)**: Tool for pasting custom job description text and evaluating match scores on demand.
-- **`search.html` (Job Discovery)**: Natural language semantic search view querying the local Qdrant database.
-- **`details.html`**: Unabridged job details and candidate profile setup view.
-- **`expert_call.html` (Live WebRTC Stage)**: Real-time 1-on-1 peer-to-peer video/audio call stage with in-call chat and live AI Expert Briefing Dossier sidebar.
+---
 
-### 3. JavaScript Orchestration (JS Layer)
+## 4. JavaScript Architecture (JS Layer)
 
-- **`api.js` (Centralized Client)**: Manages network requests via `apiClient`, managing `FormData` for PDF uploads, attaching `Authorization: Bearer <token>` headers, and parsing JSON responses.
-- **`auth.js` (Auth Engine)**: Manages Sign-In / Sign-Up tab navigation, form validations, API calls (`/api/v1/auth/login` & `/signup`), and `localStorage` session token storage.
-- **`admin.js` (Admin Engine)**: Powers admin authentication, live telemetry fetching, announcement banner publishing, feature toggling, user deletion, and audit log clearing.
-- **`upload.js`**: File picker, drag-and-drop handlers, and `/api/v1/analyze` execution.
+- **`api.js`**: Centralized HTTP client managing `FormData` for PDF uploads, automatic `Authorization: Bearer <token>` header attachment, error handling, and JSON parsing.
+- **`auth.js`**: Handles Sign-In / Sign-Up tab switching, form validation, `/api/v1/auth/login` and `/signup` calls, and `localStorage` session token management.
+- **`admin.js`**: Powers the Admin Control Console: authentication, live telemetry polling, announcement banner publishing, maintenance/feature flag toggling, candidate account deletion, and audit log clearing.
+- **`upload.js`**: Drag-and-drop file upload engine submitting resumes to `/api/v1/analyze` and redirecting to `dashboard.html`.
 - **`dashboard.js` & `analyzer.js`**: Renders top 5 recommendation cards, handles interactive inspect modal opening (`openInspectModal`), educational qualification filter toggling (`handleQualificationToggle`), ATS score ring, skill badges, and timeline DOM structures.
-- **`expert_call.js` (WebRTC Engine)**: Configures `RTCPeerConnection` with STUN servers, manages audio/video track negotiation over WebSocket signaling (`ws://localhost:8000/api/v1/expert/ws/{room_id}`), and renders the AI Briefing Dossier.
-- **`main.js`**: Unified navigation bar handling, active link state highlighting, mobile menu toggle, and global top announcement banner fetch & render.
+- **`expert_call.js`**: WebRTC engine configuring `RTCPeerConnection` with STUN servers, managing media streams over WebSocket signaling (`ws://localhost:8000/api/v1/expert/ws/{room_id}`), and rendering the live AI Briefing Dossier.
+- **`main.js`**: Handles responsive navigation, active route highlighting, mobile navigation menu toggle, and global top announcement banner retrieval.
 
 ---
 
-## How to Run & Develop
+## 5. Development & Build Instructions
 
 ```bash
 cd web_interface
+
+# Install dependencies
 npm install
+
+# Build compiled stylesheet once
 npm run build:css
+
+# Launch development environment (Tailwind watcher + Live Server)
 npm run dev
 ```
 
-Runs `concurrently` listening for Tailwind changes (`watch:css`) and launching a `live-server` on `http://localhost:3000`.
-
----
-
-## Design Standards
-
-- **Corners**: Large `rounded-xl` / `rounded-2xl` / `rounded-3xl` for floating cards.
-- **Depth**: Soft, multi-layered elevation shadows (`shadow-lg`, `shadow-2xl`).
-- **Typography**: Clean sans-serif typography (Inter) for high readability.
-- **Colors**:
-  - **Primary**: Deep violet for primary actions, auth tabs, and stage highlights.
-  - **Success**: Teal/Emerald for verified matched skills, high scores, and live 1-on-1 mentorship callouts.
-  - **Warning / Missing**: Rose/Red for missing skill gaps.
+The application runs on `http://localhost:8080` (or `http://localhost:3000`), connecting seamlessly to the backend Core Engine on `http://localhost:8000`.

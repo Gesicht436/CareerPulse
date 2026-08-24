@@ -42,28 +42,17 @@ class TelemetryService:
             self._save_db(default_data)
 
     def _load_db(self) -> Dict[str, Any]:
+        if not os.path.exists(TELEMETRY_FILE):
+            self._ensure_db()
         try:
             with open(TELEMETRY_FILE, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except Exception:
-            return {
-                "settings": {
-                    "announcement_banner": "",
-                    "announcement_active": False,
-                    "maintenance_mode": False,
-                    "enable_expert_calls": True,
-                    "enable_resume_upload": True,
-                    "enable_jd_analyzer": True
-                },
-                "metrics": {
-                    "total_page_views": 0,
-                    "total_resume_analyses": 0,
-                    "total_expert_sessions": 0,
-                    "total_job_searches": 0,
-                    "total_jd_evaluations": 0
-                },
-                "activity_logs": []
-            }
+        except json.JSONDecodeError as e:
+            print(f"ERROR: Corrupted telemetry database file at '{TELEMETRY_FILE}': {e}")
+            raise RuntimeError(f"Telemetry database file '{TELEMETRY_FILE}' is corrupted: {str(e)}") from e
+        except Exception as e:
+            print(f"ERROR reading telemetry database file: {e}")
+            raise RuntimeError(f"Failed to read telemetry database file: {str(e)}") from e
 
     def _save_db(self, data: Dict[str, Any]):
         with open(TELEMETRY_FILE, "w", encoding="utf-8") as f:

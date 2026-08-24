@@ -127,17 +127,8 @@ class LLMService:
             return data
             
         except Exception as e:
-            print(f"DEBUG ERROR: LLM Generation / JSON Parse failed: {e}. Falling back to default.")
-            return {
-                "justification": [f"System detected a {score}% semantic match based on your qualifications."],
-                "matched_skills": ["Python", "FastAPI", "Software Engineering"],
-                "missing_skills": ["Kubernetes", "System Design"],
-                "recommendations": ["Align resume keywords with job description requirements.", "Highlight system architecture experience."],
-                "career_roadmap": [
-                    {"week": "Week 1", "topic": "Cloud Infrastructure & Containerization", "description": "Master Docker and Kubernetes cluster deployment."},
-                    {"week": "Week 2", "topic": "System Design Optimization", "description": "Build high-throughput microservices using FastAPI and gRPC."}
-                ]
-            }
+            print(f"ERROR: Local LLM generation / JSON parsing failed: {e}")
+            raise RuntimeError(f"Local LLM career advice generation failed: {str(e)}") from e
 
 # Singleton instance
 llm_service = LLMService()

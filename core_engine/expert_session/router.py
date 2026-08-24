@@ -70,8 +70,11 @@ async def get_ai_briefing(room_id: str, payload: Dict[str, Any] = Body(default={
     """
     booking = expert_session_service.get_booking(room_id)
     candidate_name = booking.applicant_name if booking else "Applicant"
-    briefing = expert_session_service.generate_ai_briefing(candidate_name, payload)
-    return briefing
+    try:
+        briefing = expert_session_service.generate_ai_briefing(candidate_name, payload)
+        return briefing
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 # --- WEBRTC WEBSOCKET SIGNALING ENDPOINT ---
 

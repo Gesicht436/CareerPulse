@@ -88,7 +88,7 @@ function handleQualificationToggle() {
 
     if (isStrictQualification && userQualification) {
         // Filter jobs matching qualification keywords
-        const qualLower = userQualification.lower();
+        const qualLower = userQualification.toLowerCase();
         const filtered = allTopMatches.filter(m => {
             const text = ((m.qualifications || "") + " " + (m.description || "") + " " + (m.job_title || "")).toLowerCase();
             return text.includes(qualLower) || text.includes('bachelor') || text.includes('engineering') || text.includes('computer science');

@@ -84,22 +84,9 @@ class ExpertSessionService:
         and Qwen LLM roadmap into a structured dossier for the industry expert.
         """
         if not analysis_data or "analysis" not in analysis_data:
-            return ExpertAIBriefing(
-                candidate_name=candidate_name,
-                latest_job_title="Senior AI Systems Engineer",
-                overall_match_score=84.5,
-                security_status="Verified Clean (No PII / Hidden Text)",
-                matched_skills=["Python", "FastAPI", "Docker", "PyTorch", "Git"],
-                missing_skills=["Kubernetes Cluster Ops", "Distributed Tracing", "gRPC Protocol"],
-                recommended_roadmap=[
-                    {"week": "Week 1", "topic": "Kubernetes Orchestration", "description": "Deploy local k3s cluster with Helm charts."},
-                    {"week": "Week 2", "topic": "gRPC & High-Speed Microservices", "description": "Implement Protobuf RPC interfaces in Python."}
-                ],
-                key_discussion_points=[
-                    "Validate candidate's hands-on experience with PyTorch CUDA optimization vs CPU fallback.",
-                    "Review transition strategy for acquiring Kubernetes & gRPC skills within 3 weeks.",
-                    "Offer system design mock feedback on distributed LLM serving."
-                ]
+            raise ValueError(
+                "Cannot generate AI Expert Briefing Dossier without valid resume analysis data. "
+                "Please analyze a resume first."
             )
 
         analysis = analysis_data.get("analysis", {})

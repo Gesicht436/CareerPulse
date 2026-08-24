@@ -1,64 +1,100 @@
-# Document Processing & OCR Extraction Subsystem
+# Document Extraction & OCR Pipeline Subsystem
 
-## Technical Stack
+The `core_engine/resume_security` module provides high-fidelity PDF document parsing, multi-column layout reconstruction, table extraction, hyperlink harvesting, and adaptive 300 DPI preprocessed OCR fallback for **CareerPulse** with a strict **no-silent-fallbacks** validation policy.
 
-- **Vector Extraction Engine:** `pdfplumber` (Spatial multi-column layout reconstruction, table grid extraction, hyperlink harvesting)
-- **Hyphen Normalization Engine:** `re` (Line-wrap hyphen joining `Py-\nthon` $\to$ `Python`)
+---
+
+## 1. Technical Stack
+
+- **Vector Extraction Engine:** `pdfplumber` (Spatial coordinate sorting, word bounding boxes, table grids, annotation URIs)
+- **Line-Wrap Hyphen Repair:** Regex normalization (`re.sub(r'(\w+)-\n(\w+)', r'\1\2')`)
 - **OCR Engine:** `pytesseract` (300 DPI dual-pass `--psm 3` Tesseract-OCR)
-- **PDF Processing:** `pdf2image`, `Poppler` (300 DPI page rasterization for OCR fallback)
-- **Image Preprocessing:** `opencv-python` (CLAHE contrast enhancement, Bilateral noise filtering, Adaptive Gaussian thresholding)
+- **PDF Rasterization:** `pdf2image` & `Poppler` (High-resolution 300 DPI page conversion)
+- **Image Preprocessing:** `opencv-python` (CLAHE contrast enhancement, Bilateral edge-preserving filtering, Adaptive Gaussian Thresholding)
+- **Error Policy:** Explicit `ValueError` on unreadable/empty PDFs and `RuntimeError` on OCR/dependency failures
 
 ---
 
-## Key Progress
+## 2. Key Capabilities & Progress
 
-- [x] **Multi-Column Spatial Reconstruction**: Words sorted by `(top, x0)` to preserve two-column resume layouts without garbling text across columns.
-- [x] **Line-Wrap Hyphen Normalization**: Automatically joins hyphenated words across line breaks (`Py-\nthon` $\to$ `Python`, `Postgre-\nSQL` $\to$ `PostgreSQL`).
-- [x] **Structured Table Extraction**: Parses borderless and bordered grid tables into clean text lines.
+- [x] **Multi-Column Spatial Reconstruction**: Extracts words sorted by `(top, x0)` to reconstruct two-column and complex resume layouts without line garbling across columns.
+- [x] **Line-Wrap Hyphen Normalization**: Automatically repairs hyphenated split terms (`Py-\nthon` $\to$ `Python`, `Postgre-\nSQL` $\to$ `PostgreSQL`).
+- [x] **Structured Table Grid Parsing**: Extracts borderless and bordered tables (education, experience, certifications) into structured text lines.
 - [x] **Hyperlink & Annotation Harvesting**: Extracts embedded target URIs (`page.hyperlinks` / `page.annots`) for GitHub, LinkedIn, and personal portfolio links.
-- [x] **Page-Level Hybrid OCR**: Selectively triggers OCR per page when character density is sparse (< 30 characters).
-- [x] **300 DPI Dual-Pass Preprocessed OCR**: Applies OpenCV CLAHE contrast enhancement, bilateral filtering, and adaptive Gaussian thresholding, comparing enhanced grayscale and thresholded passes.
+- [x] **Page-Level Hybrid OCR Check**: Selectively triggers OCR on individual pages when extracted character density is sparse (< 30 characters).
+- [x] **Adaptive 300 DPI Dual-Pass Preprocessed OCR**: Applies OpenCV CLAHE contrast enhancement, bilateral noise filtering, and adaptive Gaussian thresholding, comparing enhanced grayscale vs. binarized passes.
+- [x] **Strict Document Validation**: Rejects files yielding $< 20$ characters or failed OCR passes with explicit exceptions.
 
 ---
 
-## The Extraction Pipeline
+## 3. Directory Structure
 
-The core of this module is the `process_resume` method in `service.py`, which orchestrates high-fidelity document text conversion.
-
-### 1. Vector PDF Extraction (`pdfplumber`)
-
-- **Spatial Multi-Column Reconstruction**: Uses word coordinate sorting (`round(top/3)*3, x0`) in `pdfplumber` to reconstruct multi-column layouts without merging text horizontally across columns.
-- **Table Extraction**: Parses structured matrix grids (education, experience, certification blocks) into text lines (`Col1 | Col2`).
-- **Hyperlink Harvesting**: Extracts embedded target URIs (`uri` attributes) for LinkedIn profiles, GitHub repos, and personal portfolios to enrich candidate alignment vectors.
-- **Hyphen Normalization**: Applies regex normalization (`re.sub(r'(\w+)-\n(\w+)', r'\1\2')`) to repair broken technical terms.
-
-### 2. Adaptive Preprocessed OCR Fallback (300 DPI)
-
-For scanned or image-only PDFs, the engine executes an advanced OpenCV-preprocessed OCR fallback:
-
-- **300 DPI Rasterization**: `pdf2image.convert_from_bytes(content, dpi=300)` renders high-resolution page images.
-- **CLAHE Contrast Enhancement**: Applies Contrast Limited Adaptive Histogram Equalization (`cv2.createCLAHE`) to boost text contrast on colored or gradient headers.
-- **Bilateral Noise Filtering**: Removes image noise while preserving font edges (`cv2.bilateralFilter`).
-- **Adaptive Gaussian Thresholding**: Binarizes unevenly lit or shaded backgrounds (`cv2.adaptiveThreshold`).
-- **Dual-Pass Tesseract OCR**: Runs Tesseract (`--psm 3`) on enhanced grayscale and binarized frames, selecting the pass yielding maximum high-quality text output.
+```text
+core_engine/resume_security/
+├── README.md       # Subsystem documentation (this file)
+├── __init__.py     # Package marker
+├── router.py       # FastAPI router defining /api/v1/security/upload
+└── service.py      # SecurityService: spatial extraction, table parsing, links, and dual-pass OCR
+```
 
 ---
 
-## File Details
+## 4. Extraction Pipeline Details
+
+The extraction pipeline is implemented in `SecurityService.process_resume(file)` in `service.py`:
+
+```
+Uploaded PDF
+     │
+     ▼
+[ pdfplumber Vector Extraction ]
+     ├─► Hyperlink & Annotation Harvesting (GitHub, LinkedIn, URIs)
+     ├─► Borderless & Bordered Table Extraction
+     ├─► Multi-Column Spatial Layout Sorting (top, x0)
+     └─► Line-Wrap Hyphen Normalization (re.sub)
+     │
+     ▼
+[ Sparsity Check: Character Count < 30 per page? ]
+     ├─► NO  ──► Yield Extracted Clean Document Text
+     └─► YES ──► Trigger 300 DPI Adaptive Dual-Pass OCR Fallback
+                     │
+                     ▼
+          [ pdf2image Rasterization (300 DPI) ]
+                     │
+                     ▼
+          [ OpenCV Preprocessing Pipeline ]
+             • CLAHE Contrast Enhancement
+             • Bilateral Noise Filter (Edge Preserving)
+             • Adaptive Gaussian Thresholding
+                     │
+                     ▼
+          [ Dual-Pass Tesseract OCR (--psm 3) ]
+             • Pass 1: Enhanced Grayscale Frame
+             • Pass 2: Binarized Adaptive Frame
+                     │
+                     ▼
+          [ Minimum Length Check: Extracted Text >= 20 chars? ]
+             • YES ──► Return High-Fidelity Clean Text
+             • NO  ──► Raise Explicit ValueError / RuntimeError
+```
+
+---
+
+## 5. Endpoints & Methods
 
 ### `router.py`
-The FastAPI router handles PDF file uploads via `/api/v1/security/upload`, validating file format before delegating text extraction to `SecurityService`.
+- `POST /api/v1/security/upload`: Accepts PDF file upload, validates `.pdf` extension, executes `security_service.process_resume(file)`, and returns extracted raw text and security report.
 
-### `service.py`
-Implements `SecurityService` as a singleton. Handles:
-
-- **Vector Extraction & Normalization**: `_extract_raw_text()` and `_extract_page_text_optimized()`.
-- **Table & Link Extraction**: `_extract_tables_text()` and `_extract_hyperlinks()`.
-- **Preprocessed OCR**: `_ocr_image_dual_pass()`, `_extract_single_page_ocr()`, and `_extract_text_via_ocr()`.
+### `service.py` (`SecurityService`)
+- `process_resume(file)`: High-level orchestrator returning `text`, `redacted_text`, and `security_report`. Raises `ValueError` if extracted text $< 20$ characters.
+- `_extract_raw_text(content)`: Multi-column spatial layout parser with table extraction and hyphen repair.
+- `_extract_hyperlinks(page)`: Harvests embedded URLs from PDF annotations.
+- `_extract_tables_text(page)`: Formats tabular grids into readable text lines.
+- `_ocr_image_dual_pass(image)`: Dual-pass OpenCV preprocessed OCR pipeline using `pytesseract`.
 
 ---
 
-## Requirements & Setup
+## 6. System Prerequisites
 
-1. **Tesseract-OCR**: Required for OCR fallback.
-2. **Poppler**: Required by `pdf2image` for 300 DPI PDF page rasterization.
+1. **Tesseract-OCR**: Required for OCR execution (`winget install UB-Mannheim.TesseractOCR`).
+2. **Poppler**: Required by `pdf2image` for PDF rasterization.

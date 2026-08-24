@@ -71,6 +71,9 @@ async def analyze_resume(file: UploadFile = File(...)):
         security_result = await security_service.process_resume(file)
         resume_text = security_result["redacted_text"]
 
+        if not resume_text or len(resume_text.strip()) < 20:
+            raise HTTPException(status_code=400, detail="The uploaded PDF contains no readable text or failed OCR extraction.")
+
         # Extract educational qualification from resume text
         qual_patterns = [
             (r'\b(b\.?tech|b\.?e\.?|bachelor of technology|bachelor of engineering)\b', "B.Tech / B.E."),
@@ -84,19 +87,22 @@ async def analyze_resume(file: UploadFile = File(...)):
             (r'\b(ph\.?d|doctor of philosophy)\b', "Ph.D")
         ]
         
-        detected_qualification = "B.Tech / B.E."
+        detected_qualification = None
         text_lower = resume_text.lower()
         for pat, name in qual_patterns:
             if re.search(pat, text_lower):
                 detected_qualification = name
                 break
 
-        # 2. Match with Smart Match Service for top 5 recommendations with strict qualification filter
+        effective_qualification = detected_qualification or "Unspecified"
+        is_strict = detected_qualification is not None
+
+        # 2. Match with Smart Match Service for top 5 recommendations
         match_results = await smart_match_service.match_against_database(
             resume_text, 
             limit=5, 
             qualification=detected_qualification, 
-            strict_qualification=True
+            strict_qualification=is_strict
         )
 
         all_matches = match_results.top_matches if match_results.top_matches else []
@@ -112,14 +118,14 @@ async def analyze_resume(file: UploadFile = File(...)):
         
         telemetry_service.log_event(
             "RESUME_ANALYSIS",
-            f"Processed PDF resume '{file.filename}' for '{detected_qualification}' qualification with top match score {round(score)}%.",
-            {"filename": file.filename, "qualification": detected_qualification, "overall_score": score, "total_recommendations": len(all_matches)}
+            f"Processed PDF resume '{file.filename}' for '{effective_qualification}' qualification with top match score {round(score)}%.",
+            {"filename": file.filename, "qualification": effective_qualification, "overall_score": score, "total_recommendations": len(all_matches)}
         )
 
         # 4. Combine results with top 5 recommendations and qualification metadata
         return {
             "filename": file.filename,
-            "qualification": detected_qualification,
+            "qualification": effective_qualification,
             "security_report": security_result["security_report"],
             "top_matches": all_matches,
             "analysis": top_match
@@ -127,6 +133,10 @@ async def analyze_resume(file: UploadFile = File(...)):
         
     except HTTPException:
         raise
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
         import traceback
         print(traceback.format_exc())

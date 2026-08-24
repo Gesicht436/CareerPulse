@@ -8,13 +8,31 @@
     "enable_jd_analyzer": true
   },
   "metrics": {
-    "total_page_views": 145,
+    "total_page_views": 147,
     "total_resume_analyses": 34,
     "total_expert_sessions": 12,
     "total_job_searches": 45,
     "total_jd_evaluations": 19
   },
   "activity_logs": [
+    {
+      "id": "log_1787580077854",
+      "timestamp": "2026-08-24T14:01:17.854057+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787579243333",
+      "timestamp": "2026-08-24T13:47:23.333407+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
     {
       "id": "log_1786616877125",
       "timestamp": "2026-08-13T10:27:57.125196+00:00",

@@ -42,5 +42,23 @@
     "salt": "495433c3095ce5b9fb462e8be84ea69f",
     "role": "user",
     "created_at": "2026-08-13T10:27:57.070842+00:00"
+  },
+  "usr_c851e9067d1a52b4": {
+    "id": "usr_c851e9067d1a52b4",
+    "full_name": "Test Candidate",
+    "email": "test_1787579243@example.com",
+    "password_hash": "6882f21f499bca96944b45af918338f6224ad886dca4ecd4f98cb5b91822b4cc",
+    "salt": "a864184abd23c11aafd1b714a9ccdbf9",
+    "role": "user",
+    "created_at": "2026-08-24T13:47:23.265759+00:00"
+  },
+  "usr_228e1a9dc4f8d793": {
+    "id": "usr_228e1a9dc4f8d793",
+    "full_name": "Test Candidate",
+    "email": "test_1787580077@example.com",
+    "password_hash": "c1ac155fe433ce496d34e9044de7f6c955f2348f29d2e9cab149572641aa49e9",
+    "salt": "5c5d54769a3d8a49dfdb720b5faf6ab4",
+    "role": "user",
+    "created_at": "2026-08-24T14:01:17.791755+00:00"
   }
 }

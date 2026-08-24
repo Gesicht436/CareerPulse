@@ -41,11 +41,17 @@ class AuthService:
             self._save_users(users)
 
     def _load_users(self) -> Dict[str, Dict[str, Any]]:
+        if not os.path.exists(DB_FILE):
+            return {}
         try:
             with open(DB_FILE, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except Exception:
-            return {}
+        except json.JSONDecodeError as e:
+            print(f"ERROR: Corrupted users database file at '{DB_FILE}': {e}")
+            raise RuntimeError(f"User database file '{DB_FILE}' is corrupted: {str(e)}") from e
+        except Exception as e:
+            print(f"ERROR reading users database file: {e}")
+            raise RuntimeError(f"Failed to read user database file: {str(e)}") from e
 
     def _save_users(self, users: Dict[str, Dict[str, Any]]):
         with open(DB_FILE, "w", encoding="utf-8") as f:

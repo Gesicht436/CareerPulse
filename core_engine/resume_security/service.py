@@ -20,6 +20,9 @@ class SecurityService:
         text = self._extract_raw_text(content)
         print(f"DEBUG: Extracted raw text length: {len(text)} characters")
         
+        if not text or len(text.strip()) < 20:
+            raise ValueError("Unable to extract readable text from the uploaded PDF resume. Ensure the PDF contains readable text or clear scanned content.")
+        
         return {
             "text": text,
             "redacted_text": text,  # Raw text preserved (no PII redaction)
@@ -81,9 +84,12 @@ class SecurityService:
             cleaned_text = re.sub(r'(\w+)-\n(\w+)', r'\1\2', combined_doc_text)
             return cleaned_text.strip()
         except Exception as e:
-            print(f"DEBUG ERROR: Vector PDF text extraction failed: {e}. Executing full OCR...")
+            print(f"DEBUG: Vector PDF text extraction encountered error: {e}. Executing full OCR...")
             ocr_text = self._extract_text_via_ocr(content)
-            return re.sub(r'(\w+)-\n(\w+)', r'\1\2', ocr_text).strip()
+            cleaned_ocr = re.sub(r'(\w+)-\n(\w+)', r'\1\2', ocr_text).strip()
+            if not cleaned_ocr or len(cleaned_ocr) < 20:
+                raise ValueError(f"Failed to extract readable text from PDF: Vector extraction error ({e}) and OCR yielded empty text.") from e
+            return cleaned_ocr
 
     def _extract_hyperlinks(self, page: Any) -> List[str]:
         """Harvest URIs embedded in PDF page annotations."""
@@ -102,8 +108,8 @@ class SecurityService:
                     uri = annot.get('uri') or annot.get('A', {}).get('URI')
                     if uri and uri not in links:
                         links.append(uri)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"DEBUG: Hyperlink extraction warning: {e}")
         return links
 
     def _extract_tables_text(self, page: Any) -> str:
@@ -120,7 +126,8 @@ class SecurityService:
                     if clean_row:
                         table_lines.append(" | ".join(clean_row))
             return "\n".join(table_lines)
-        except Exception:
+        except Exception as e:
+            print(f"DEBUG: Table extraction warning: {e}")
             return ""
 
     def _extract_page_text_optimized(self, page: Any) -> str:
@@ -177,9 +184,10 @@ class SecurityService:
             images = convert_from_bytes(content, first_page=page_idx + 1, last_page=page_idx + 1, dpi=300)
             if images:
                 return self._ocr_image_dual_pass(images[0])
+            raise RuntimeError(f"Failed to rasterize page {page_idx + 1} with pdf2image.")
         except Exception as e:
-            print(f"DEBUG ERROR: Single-page OCR failed for page {page_idx + 1}: {e}")
-        return ""
+            print(f"ERROR: Single-page OCR failed for page {page_idx + 1}: {e}")
+            raise RuntimeError(f"Single-page OCR failed for page {page_idx + 1}: {str(e)}. Ensure Tesseract-OCR and Poppler are installed.") from e
 
     def _extract_text_via_ocr(self, content: bytes) -> str:
         """Full document OCR fallback using 300 DPI and dual-pass adaptive preprocessing."""
@@ -187,6 +195,8 @@ class SecurityService:
         print("DEBUG: Executing dual-pass preprocessed OCR extraction (300 DPI)...")
         try:
             images = convert_from_bytes(content, dpi=300)
+            if not images:
+                raise RuntimeError("pdf2image returned 0 pages for the document.")
             ocr_pages = []
             for i, image in enumerate(images):
                 page_text = self._ocr_image_dual_pass(image)
@@ -194,8 +204,8 @@ class SecurityService:
                 print(f"DEBUG: Dual-pass OCR processed page {i+1}")
             return "\n\n".join(ocr_pages)
         except Exception as e:
-            print(f"DEBUG ERROR: Full OCR failed: {e}. Ensure Tesseract and Poppler are installed.")
-            return ""
+            print(f"ERROR: Full OCR execution failed: {e}. Ensure Tesseract and Poppler are installed.")
+            raise RuntimeError(f"OCR text extraction failed: {str(e)}. Ensure Tesseract-OCR and Poppler are properly installed on the system.") from e
 
     def _ocr_image_dual_pass(self, image: Any) -> str:
         """
@@ -228,14 +238,16 @@ class SecurityService:
         # Pass 1: Enhanced Grayscale image
         try:
             text_pass1 = pytesseract.image_to_string(denoised, config=tess_config)
-        except Exception:
-            text_pass1 = ""
+        except Exception as e:
+            print(f"ERROR: Tesseract OCR failed on grayscale pass: {e}")
+            raise RuntimeError(f"Tesseract OCR failed during grayscale pass: {str(e)}") from e
 
         # Pass 2: Adaptive Binarized image
         try:
             text_pass2 = pytesseract.image_to_string(adaptive_thresh, config=tess_config)
-        except Exception:
-            text_pass2 = ""
+        except Exception as e:
+            print(f"ERROR: Tesseract OCR failed on adaptive threshold pass: {e}")
+            raise RuntimeError(f"Tesseract OCR failed during adaptive threshold pass: {str(e)}") from e
 
         # Select pass yielding the highest quality text content
         return text_pass1 if len(text_pass1.strip()) >= len(text_pass2.strip()) else text_pass2

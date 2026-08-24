@@ -1,59 +1,92 @@
-# Smart Match Engine: Dual-Stage Semantic Analysis
+# Smart Match Engine: Dual-Stage Semantic Matching & Local LLM Reasoning
 
-## Technical Stack
-
-- **Similarity Engine:** `sentence-transformers` (SBERT for high-speed vector math)
-- **Token-Aware Skill Matcher:** `is_skill_in_text` (Token boundary matching with 150+ tech dictionary)
-- **Local LLM:** `transformers` (Hugging Face implementation of Qwen 2.5)
-- **Quantization:** `bitsandbytes` (4-bit NF4 quantization for low VRAM usage)
-- **Inference Optimization:** `accelerate` (Dynamic device mapping for CUDA/CPU)
-- **Schema Enforcement:** `pydantic` (Ensuring structured LLM JSON responses)
-- **Data Serialization:** Python `json`, `re` (Robust parsing of LLM outputs)
+The `core_engine/smart_match` module is the intelligence core of **CareerPulse**. It performs section-aware vector scoring, token-aware technical skill extraction, academic degree filtering, and qualitative career roadmap synthesis using a local quantized Large Language Model.
 
 ---
 
-## Key Progress
+## 1. Technical Stack
 
-- [x] **Semantic Scoring & Calibration:** SBERT Cosine Similarity scaled over $[0.12, 0.60] \to [0\%, 100\%]$.
-- [x] **Token-Aware Technical Skill Matcher:** `is_skill_in_text` token boundary matching evaluating technical skill overlap ratios accurately.
-- [x] **Multi-Factor ATS Blending:** $50\%$ Semantic Vector Alignment + $50\%$ Technical Skill Overlap Ratio.
-- [x] **Educational Degree Filtering:** Degree group matching (`DEGREE_GROUPS`) restricting matches to candidate educational qualifications (`B.Tech`, `B.Sc`, `MBA`, etc.).
-- [x] **LLM Integration:** Wired Local LLM for qualitative reasoning and feedback.
-- [x] **Structured Analysis:** Enforced strict JSON schema for LLM outputs.
-- [x] **Skill Gap Logic:** Automated extraction of missing vs. matched skills.
-- [x] **Roadmap Generation:** Context-aware 4-week learning path development.
+- **Vector Mathematics:** `sentence-transformers` (SBERT `all-MiniLM-L6-v2` generating 384-dimensional dense vectors)
+- **Token-Aware Skill Matcher:** Custom `is_skill_in_text` matching engine with 150+ technology dictionary and regex word-boundary evaluation
+- **Local LLM Engine:** `transformers` & `bitsandbytes` (Local Qwen 2.5 1.5B/7B inference with 4-bit NF4 quantization)
+- **Inference Optimization:** Dynamic CUDA GPU allocation with CPU fallback support
+- **Schema Enforcement:** Pydantic models guaranteeing valid structured JSON responses
 
 ---
 
-The **Smart Match Engine** is the intelligence hub of CareerPulse. It moves beyond simple keyword counting to perform deep, contextual analysis of professional alignment. By combining high-speed vector mathematics, token-aware skill matching, and the nuanced reasoning of Large Language Models (LLMs), the engine provides candidates with more than just a score—it provides a personalized roadmap to career success.
+## 2. Key Capabilities & Progress
 
-## The Multi-Stage Matching Architecture
-
-### Stage 1: Section-Aware Vector Search & Degree Filtering
-- **Vector Retrieval**: Computes SBERT embeddings with section-aware hybrid weighting ($0.40 \times \text{Headline} + 0.60 \times \text{Body}$).
-- **Degree Qualification Filter**: Applies degree group matching (`DEGREE_GROUPS`) when `strict_qualification=True`, restricting dataset postings to jobs matching candidate degree qualifications (`B.Tech`, `B.Sc`, `MBA`, etc.).
-
-### Stage 2: Token-Aware Skill Matcher & Score Calibration
-- **Token Matcher (`is_skill_in_text`)**: Tokenizes skill phrases and matches core technical terms against candidate resume text using a built-in 150+ tech dictionary.
-- **Calibrated Blended ATS Score**: $\text{ATS Score} = 0.50 \times \text{Vector Similarity \%} + 0.50 \times \text{Skill Overlap \%}$.
-
-### Stage 3: Qualitative LLM Reasoning (Local Qwen 2.5)
-- Triggers the **LLM Service** (Qwen 2.5 1.5B/7B) to perform qualitative evaluation.
-- Enforces strict JSON output containing:
-  - **Justification**: Key reasons why the score was assigned.
-  - **Skill Gap Analysis**: Verified matched vs missing technical skills.
-  - **Actionable Recommendations**: Concrete steps to improve alignment.
-  - **Career Roadmap**: Multi-week learning plan to master missing skills.
+- [x] **Section-Aware Vector Search**: Blended cosine similarity ($0.40 \times \text{Headline} + 0.60 \times \text{Body}$) yielding top 5 job recommendations.
+- [x] **Token-Aware Skill Matcher (`is_skill_in_text`)**: Evaluates direct substrings, exact token boundaries, and technical term lemmas across 150+ technologies.
+- [x] **Calibrated ATS Blending**: Blends $50\%$ Semantic Vector Alignment + $50\%$ Technical Skill Overlap Ratio into a unified 0–100% match score.
+- [x] **Educational Degree Filtering**: Strict degree group matching (`DEGREE_GROUPS`) restricting matches to candidate educational qualifications (`B.Tech`, `B.Sc`, `MBA`, etc.).
+- [x] **Local Quantized Qwen 2.5 LLM**: Executes local Qwen 2.5 model in 4-bit NF4 quantization for high-speed, zero-cloud private inference.
+- [x] **Automated Career Roadmaps**: Generates structured 4-week weekly learning plans to bridge identified technical skill gaps.
 
 ---
 
-## Module Components
+## 3. Directory Structure
 
-### `router.py` (API Layer)
-Exposes matching capabilities via FastAPI (`/match`, `/search-jobs`).
+```text
+core_engine/smart_match/
+├── README.md       # Subsystem documentation (this file)
+├── __init__.py     # Package marker
+├── router.py       # FastAPI endpoints (/match, /match-all, /search-jobs)
+├── schemas.py      # Pydantic schemas (SmartMatchRequest, SmartMatchResponse, JobMatchResult)
+└── service.py      # SmartMatchService: SBERT scoring, skill matching, and LLM advice
+```
 
-### `schemas.py` (Data Structures)
-Pydantic models (`SmartMatchResponse`, `JobMatchResult`, `MultiJobMatchResponse`).
+---
 
-### `service.py` (Orchestrator)
- coordinates vector search, token-aware skill matching, degree filtering, and LLM advice.
+## 4. Matching Pipeline Architecture
+
+```
+Candidate Resume Text
+         │
+         ▼
+[ Stage 1: Degree Extraction & Group Filtering ]
+  Extract candidate qualification (e.g. B.Tech)
+  Filter SQLite dataset via DEGREE_GROUPS
+         │
+         ▼
+[ Stage 2: Section-Aware SBERT Vector Ranking ]
+  Compute V_headline & V_body embeddings
+  Execute PyTorch cosine similarity matrix multiplication:
+  Score = 0.40 * Sim(Headline) + 0.60 * Sim(Body)
+  Select Top 5 Candidates
+         │
+         ▼
+[ Stage 3: Token-Aware Technical Skill Overlap ]
+  Evaluate 150+ technology dictionary against text
+  Compute Matched Skills & Missing Skill Gaps
+  Calibrate ATS Score: 50% Vector + 50% Skill Overlap
+         │
+         ▼
+[ Stage 4: Local Qwen 2.5 LLM Qualitative Reasoning ]
+  Synthesize Match Justifications
+  Identify Detailed Actionable Recommendations
+  Construct Tailored Weekly Career Learning Roadmap
+```
+
+---
+
+## 5. API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/smart-match/match` | Evaluates a single resume against a specific custom job description text |
+| `POST` | `/api/v1/smart-match/match-all` | Compares a resume against the entire SQLite database and returns top 5 recommendations |
+| `GET` | `/api/v1/smart-match/search-jobs` | Semantic job search query returning ranked job descriptions |
+
+---
+
+## 6. Key Components
+
+### `service.py` (`SmartMatchService`)
+- **`match_against_database(resume_text, limit, qualification, strict_qualification)`**: Retrieves top JDs from the data layer and calculates complete match breakdowns.
+- **`calculate_match(request, dynamic_skills)`**: Computes SBERT similarity, token-aware skill overlap, calibrated ATS score, and queries `LLMService` for qualitative justifications and roadmaps.
+
+### `schemas.py`
+- **`SmartMatchRequest`**: Payload containing `resume_text` and `jd_text`.
+- **`SmartMatchResponse`**: Contains `semantic_score`, `skill_score`, `overall_score`, `matched_skills`, `missing_skills`, `justification`, `recommendations`, and `career_roadmap`.
+- **`JobMatchResult`**: Bundles job metadata with embedded `SmartMatchResponse`.
