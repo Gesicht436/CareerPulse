@@ -1,6 +1,6 @@
 # CareerPulse Core Engine: High-Performance Resume Intelligence
 
-The **Core Engine** is the backend central nervous system of **CareerPulse**. It orchestrates user authentication, administrative telemetry and site controls, high-fidelity PDF and OCR document extraction, zero-Docker embedded vector matching, local quantized LLM reasoning, and real-time WebRTC 1-on-1 expert mentoring with a strict **no-silent-fallbacks** error policy.
+The **Core Engine** is the backend central nervous system of **CareerPulse**. It orchestrates user authentication, administrative telemetry and site controls, high-fidelity PDF and OCR document extraction, 1.61M zero-Docker embedded vector matching, local quantized LLM reasoning, and real-time WebRTC 1-on-1 expert mentoring with a strict **no-silent-fallbacks** error policy.
 
 ---
 
@@ -10,7 +10,7 @@ The **Core Engine** is the backend central nervous system of **CareerPulse**. It
 - **Authentication & Admin:** Standard library `hashlib.pbkdf2_hmac` (SHA-256, 100,000 iterations, 16-byte random salts), HMAC-SHA256 7-day JWT tokens, Admin Router (`/api/v1/admin`)
 - **Telemetry Analytics:** `psutil` system metrics (CPU %, RAM MB/%, Uptime) and activity event logger (`telemetry_db.json`)
 - **Document & OCR Engine:** `pdfplumber` (Spatial multi-column coordinate sorting `top, x0`), borderless/bordered table parsing, embedded hyperlink harvesting, regex hyphen line-wrap joining, and 300 DPI dual-pass preprocessed OCR fallback (OpenCV CLAHE + Bilateral Filtering + Adaptive Thresholding + `pytesseract` `--psm 3`)
-- **Persistence & Vector Search:** Zero-Docker Embedded SQLite (`jobs.db`) & PyTorch Pre-Computed Tensor Embeddings Matrix (`dataset_embeddings_cache.pt`, shape `(5000, 384)`)
+- **Persistence & Vector Search:** Zero-Docker Embedded SQLite (`jobs.db`, 1.78 GB in WAL mode) & In-Memory PyTorch FP16 Tensor Embeddings Matrix (`embeddings/dataset_embeddings_full.pt`, shape `(1615940, 384)`, ~1.24 GB) + Bitmask Tensor (`embeddings/dataset_meta_full.pt`)
 - **Embeddings & AI:**
   - `sentence-transformers` (`all-MiniLM-L6-v2` for 384-dimensional vectors with Section-Aware weighting: $0.40 \times \text{Headline} + 0.60 \times \text{Body}$)
   - Batch SBERT query encoding (`batch_size=2`) for simultaneous headline and body vector calculation
@@ -38,25 +38,30 @@ core_engine/
 │   ├── README.md               # Auth subsystem documentation
 │   ├── __init__.py             # Package marker
 │   ├── router.py               # Auth endpoints (/signup, /login, /me)
-│   ├── schemas.py              # User schemas (UserCreate, UserLogin, TokenResponse)
+│   ├── schemas.py              # User schemas (UserCreate, UserLogin, UserResponse, TokenResponse)
 │   ├── service.py              # PBKDF2 hashing, JWT signing, users_db.json CRUD
 │   └── users_db.json           # Persistent user store
-├── data_layer/                 # Embedded SQLite Database & Vector Subsystem
+├── data_layer/                 # Embedded SQLite Database & 1.61M Vector Subsystem
 │   ├── README.md               # Data layer documentation
 │   ├── __init__.py             # Package marker
-│   ├── database.py             # SQLite connection manager & queries
-│   ├── schemas.py              # JobDescriptionModel schema
-│   └── service.py              # DataLayerService, section-aware search & tensor cache
-├── datasets/                   # Datasets & Cached Embeddings
+│   ├── database.py             # SQLite connection manager & 18-column schema in WAL mode
+│   ├── schemas.py              # JobDescriptionModel & CompanyProfileModel schemas
+│   └── service.py              # DataLayerService, 1.61M vector ranking & degree bitmasking
+├── datasets/                   # Datasets & 1.61M Precomputed Embeddings
 │   ├── README.md               # Datasets documentation
-│   ├── jobs.db                 # Embedded SQLite job descriptions database
-│   ├── dataset_embeddings_cache.pt # 5,000 x 384 PyTorch tensor embeddings matrix
+│   ├── jobs.db                 # Embedded SQLite jobs database (1.78 GB, 1.61M rows)
+│   ├── embeddings/             # Automatically generated vector embeddings folder
+│   │   ├── dataset_embeddings_full.pt # (1615940, 384) PyTorch FP16 tensor matrix (1.24 GB)
+│   │   ├── dataset_meta_full.pt # Job IDs and Degree Bitmask Tensor (43 MB)
+│   │   └── cache_checkpoints/  # Intermediate chunk checkpointing folder
+│   ├── processed/              # Automatically generated processed data folder
+│   │   └── cleaned_job_descriptions.csv # Cleaned & normalized 1.61M dataset (1.39 GB)
 │   └── raw/
-│       └── job_descriptions.csv # 1.6M Kaggle job descriptions dataset
-├── expert_session/             # Live 1-on-1 WebRTC Expert System
+│       └── job_descriptions.csv # Raw 1.6M Kaggle job descriptions dataset
+├── expert_session/             # Live 1-on-1 WebRTC Expert Mentorship System
 │   ├── README.md               # Expert session documentation
 │   ├── router.py               # WebSockets signaling router & REST endpoints
-│   ├── schemas.py              # ExpertProfile, BookingRequest, ExpertAIBriefing schemas
+│   ├── schemas.py              # ExpertProfile, BookingRequest, SessionBooking, ExpertAIBriefing
 │   └── service.py              # ExpertSessionService & briefing synthesis
 ├── resume_security/            # Document & OCR Extraction Engine
 │   ├── README.md               # Extraction & OCR documentation
@@ -67,7 +72,7 @@ core_engine/
 │   ├── README.md               # Smart match documentation
 │   ├── __init__.py             # Package marker
 │   ├── router.py               # Endpoints (/match, /match-all, /search-jobs)
-│   ├── schemas.py              # SmartMatchRequest, SmartMatchResponse, JobMatchResult
+│   ├── schemas.py              # SmartMatchRequest, SmartMatchResponse, JobMatchResult, MultiJobMatchResponse
 │   └── service.py              # SBERT Scoring + Token Matcher + LLM Reasoning
 └── telemetry/                  # Telemetry Analytics Subsystem
     ├── README.md               # Telemetry subsystem documentation
@@ -85,11 +90,11 @@ core_engine/
   1. Maintenance mode & feature flag check (`enable_resume_upload`).
   2. Multi-column PDF parsing & OCR extraction (`SecurityService`).
   3. **Strict Validation**: Rejects empty or unreadable PDFs ($< 20$ characters) with HTTP `400 Bad Request`.
-  4. Automatic candidate educational qualification detection (`B.Tech`, `B.Sc`, etc.) or assigns `"Unspecified"`.
-  5. Top 5 job recommendations retrieval via section-aware vector scoring and strict qualification filtering (`SmartMatchService`).
+  4. Automatic candidate educational qualification detection (`B.Tech`, `B.Sc`, `MBA`, `MCA`, etc.) or assigns `"Unspecified"`.
+  5. Top 5 job recommendations retrieval across the 1.61M dataset via section-aware vector scoring and degree bitmask filtering (`SmartMatchService`).
   6. Telemetry event logging (`RESUME_ANALYSIS`).
-  7. Return of structured payload with detected degree, security report, and match results.
-  8. Propagates explicit HTTP status codes: `400` (bad input/validation), `503` (missing dataset/maintenance), `500` (internal execution failure).
+  7. Returns structured payload with detected degree, security report, top 5 recommendations, and deep ATS analysis.
+  8. Propagates explicit HTTP status codes: `400` (bad input/validation), `403` (feature disabled), `503` (missing dataset/maintenance), `500` (internal execution failure).
 
 ### 2. Authentication & Admin (`auth/` & `admin/`)
 - User onboarding and login via PBKDF2-HMAC-SHA256 (100,000 rounds).
@@ -98,17 +103,17 @@ core_engine/
 - Strict JSON database error handling: Corrupted user database files raise explicit `RuntimeError` rather than silently wiping data.
 
 ### 3. Data & Vector Store (`data_layer/` & `datasets/`)
-- Zero-Docker architecture using native `sqlite3` (`jobs.db`) and pre-computed PyTorch tensor matrix (`dataset_embeddings_cache.pt`).
-- Sub-10ms similarity queries using PyTorch tensor operations (`torch.matmul`) with section-aware weighting ($0.40 \times \text{Headline} + 0.60 \times \text{Body}$).
-- Batch SBERT query encoding (`batch_size=2`) for simultaneous headline and body vector calculation.
+- **Single-Tier 1.61M Architecture**: Zero Docker containers, leveraging native `sqlite3` (`jobs.db`, 1.78 GB) and in-memory PyTorch FP16 matrix (`dataset_embeddings_full.pt`, 1.24 GB).
+- Sub-250ms similarity queries across all 1,615,940 jobs using parallel PyTorch tensor dot products (`torch.matmul`) with section-aware weighting ($0.40 \times \text{Headline} + 0.60 \times \text{Body}$).
+- High-speed indexed batch retrieval from SQLite (`fetch_jobs_by_ids`).
 - **Strict Data Policies**:
-  - Unseeded database without raw dataset CSV raises `FileNotFoundError`.
-  - Zero matching jobs under strict qualification filter raises explicit `ValueError` (no silent fallback to arbitrary jobs).
+  - Missing vector matrix or SQLite database raises explicit `FileNotFoundError`.
+  - Zero matching jobs under strict qualification filter raises explicit `ValueError`.
 
 ### 4. Matching & Local LLM (`smart_match/` & `llm_service.py`)
 - Token-aware skill matcher (`is_skill_in_text`) using 150+ tech term dictionary.
-- 50/50 blended ATS scoring (Vector Alignment + Skill Overlap).
-- Local Qwen 2.5 (1.5B/7B) quantized to 4-bit NF4 generating structured JSON advice and weekly roadmaps.
+- Calibrated 50/50 blended ATS scoring (Vector Alignment + Skill Overlap).
+- Local Qwen 2.5 (1.5B/7B) quantized to 4-bit NF4 generating structured JSON advice and weekly learning roadmaps.
 - **Strict Inference Policy**: If LLM generation or JSON parsing fails, raises explicit `RuntimeError` with root cause (zero fake mock data).
 
 ### 5. Document Extraction (`resume_security/`)

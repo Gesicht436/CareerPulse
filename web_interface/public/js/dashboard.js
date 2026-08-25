@@ -171,8 +171,24 @@ function openInspectModal(match) {
     const score = Math.round(matchDetails.overall_score || 0);
 
     document.getElementById('modal-job-title').textContent = match.job_title || 'Target Job Role';
+    
+    const roleEl = document.getElementById('modal-role');
+    if (roleEl) {
+        roleEl.textContent = match.role ? `Specialization / Role: ${match.role}` : `Role: ${match.job_title}`;
+    }
+
     document.getElementById('modal-company').textContent = match.company || 'Enterprise Partner';
-    document.getElementById('modal-work-type').textContent = match.work_type || 'Full-time / Remote';
+    document.getElementById('modal-work-type').textContent = match.work_type || 'Full-time';
+
+    const portalBadge = document.getElementById('modal-portal-badge');
+    if (portalBadge) {
+        if (match.job_portal) {
+            portalBadge.textContent = `Source: ${match.job_portal}`;
+            portalBadge.classList.remove('hidden');
+        } else {
+            portalBadge.classList.add('hidden');
+        }
+    }
 
     const matchBadge = document.getElementById('modal-match-badge');
     if (matchBadge) {
@@ -185,17 +201,47 @@ function openInspectModal(match) {
     }
 
     document.getElementById('modal-location').textContent = [match.location, match.country].filter(Boolean).join(', ') || 'Remote';
-    document.getElementById('modal-experience').textContent = match.experience || 'Not specified';
+    document.getElementById('modal-experience').textContent = match.experience ? `${match.experience} Years` : 'Not specified';
     document.getElementById('modal-salary').textContent = match.salary_range || 'Competitive / Industry standard';
-    document.getElementById('modal-qualifications').textContent = match.qualifications || "Bachelor's / Equivalent degree";
+    document.getElementById('modal-qualifications').textContent = match.qualifications || "Bachelor's Degree";
+
+    // Populate Company Profile
+    const profileContainer = document.getElementById('modal-company-profile-container');
+    const profileDetails = document.getElementById('modal-company-profile-details');
+    if (profileContainer && profileDetails) {
+        const cp = match.company_profile || {};
+        if (typeof cp === 'object' && Object.keys(cp).length > 0) {
+            profileContainer.classList.remove('hidden');
+            let profileHtml = '';
+            if (cp.Sector) profileHtml += `<div><span class="font-bold text-slate-700">Sector:</span> ${cp.Sector}</div>`;
+            if (cp.Industry) profileHtml += `<div><span class="font-bold text-slate-700">Industry:</span> ${cp.Industry}</div>`;
+            if (cp.CEO) profileHtml += `<div><span class="font-bold text-slate-700">CEO:</span> ${cp.CEO}</div>`;
+            if (cp.Website) {
+                const url = cp.Website.startsWith('http') ? cp.Website : `https://${cp.Website}`;
+                profileHtml += `<div><span class="font-bold text-slate-700">Website:</span> <a href="${url}" target="_blank" rel="noopener" class="text-violet-600 font-bold hover:underline">${cp.Website}</a></div>`;
+            }
+            if (cp.Ticker) profileHtml += `<div><span class="font-bold text-slate-700">Ticker:</span> <span class="px-1.5 py-0.5 bg-slate-200 rounded font-mono text-[10px]">${cp.Ticker}</span></div>`;
+            profileDetails.innerHTML = profileHtml || '<div>Enterprise Profile verified</div>';
+        } else {
+            profileContainer.classList.add('hidden');
+        }
+    }
+
+    // Populate Responsibilities
+    const respContainer = document.getElementById('modal-responsibilities-container');
+    const respEl = document.getElementById('modal-responsibilities');
+    if (respContainer && respEl) {
+        if (match.responsibilities && match.responsibilities.length > 5) {
+            respContainer.classList.remove('hidden');
+            respEl.textContent = match.responsibilities;
+        } else {
+            respContainer.classList.add('hidden');
+        }
+    }
 
     const descEl = document.getElementById('modal-description');
     if (descEl) {
-        if (match.description && match.description.length > 20) {
-            descEl.textContent = match.description;
-        } else {
-            descEl.textContent = `We are seeking a qualified ${match.job_title} at ${match.company || 'our enterprise partner'}.\n\nKey Responsibilities:\n• Design, develop, and maintain high-throughput backend services and systems.\n• Collaborate with cross-functional technical teams to implement robust software architectures.\n• Participate in code reviews, optimize database queries, and ensure security compliance.\n\nQualifications & Requirements:\n• Educational Qualification: ${match.qualifications || 'B.Tech / B.E. / Equivalent'}.\n• Proven experience matching the required technical stack.`;
-        }
+        descEl.textContent = match.description || 'Full description not provided.';
     }
 
     const skillsContainer = document.getElementById('modal-skills');
@@ -216,6 +262,18 @@ function openInspectModal(match) {
         }
 
         skillsContainer.innerHTML = skillsHtml;
+    }
+
+    // Recruiter Contact
+    const contactContainer = document.getElementById('modal-contact-container');
+    const contactText = document.getElementById('modal-contact-text');
+    if (contactContainer && contactText) {
+        if (match.contact_person || match.contact) {
+            contactContainer.classList.remove('hidden');
+            contactText.innerHTML = `<strong>Recruiter:</strong> ${match.contact_person || 'HR Department'} (${match.contact || 'Direct application on portal'})`;
+        } else {
+            contactContainer.classList.add('hidden');
+        }
     }
 
     modal.classList.remove('hidden');

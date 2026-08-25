@@ -1,124 +1,69 @@
 import os
-import re
-import pandas as pd
+from typing import List, Optional, Any
 import torch
-from typing import List, Dict, Any, Optional
-from core_engine.data_layer.database import init_db, save_jobs, fetch_all_jobs
 from core_engine.data_layer.schemas import JobDescriptionModel
+from core_engine.data_layer.database import fetch_jobs_by_ids, DB_PATH
 from core_engine.embedding_service import embedding_service
-from sentence_transformers import util
 
-DATASET_CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets", "raw", "job_descriptions.csv")
-EMBEDDINGS_CACHE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets", "dataset_embeddings_cache.pt")
+EMBEDDINGS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets", "embeddings")
+EMBEDDINGS_FULL_PATH = os.path.join(EMBEDDINGS_DIR, "dataset_embeddings_full.pt") if os.path.exists(os.path.join(EMBEDDINGS_DIR, "dataset_embeddings_full.pt")) else os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets", "dataset_embeddings_full.pt")
+META_FULL_PATH = os.path.join(EMBEDDINGS_DIR, "dataset_meta_full.pt") if os.path.exists(os.path.join(EMBEDDINGS_DIR, "dataset_meta_full.pt")) else os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets", "dataset_meta_full.pt")
 
 DEGREE_GROUPS = {
-    "engineering": ["b.tech", "b.e", "m.tech", "bca", "mca", "engineering", "computer science", "bachelor", "b.sc"],
-    "science": ["b.sc", "m.sc", "ph.d", "phd", "science", "mathematics", "physics", "bachelor", "master"],
-    "business": ["b.com", "mba", "bba", "m.com", "business", "finance", "accounting", "marketing", "management"],
-    "general": ["bachelor", "master", "degree", "diploma", "graduate"]
+    "engineering": ["b.tech", "m.tech", "bca", "mca", "b.e", "computer science", "engineering"],
+    "business": ["mba", "bba", "b.com", "m.com", "business", "finance", "marketing", "management"],
+    "arts": ["ba", "bachelor of arts", "arts", "humanities"],
+    "research": ["phd", "ph.d", "doctorate", "research"]
+}
+
+DEGREE_CODE_MAP = {
+    "engineering": 1,
+    "business": 2,
+    "arts": 3,
+    "research": 4
 }
 
 class DataLayerService:
+    """
+    High-Performance Zero-Docker Data Layer for CareerPulse.
+    Operates strictly across the full 1,615,940 jobs dataset using:
+    - In-memory PyTorch FP16 Vector Tensor Matrix (dataset_embeddings_full.pt)
+    - Zero-Object GPU/CPU Matrix Multiplication (torch.matmul)
+    - High-Speed Indexed SQLite Batch Retrieval (jobs.db)
+    """
     def __init__(self):
-        self._cached_dataset_jobs: Optional[List[JobDescriptionModel]] = None
-        self._cached_dataset_embeddings: Optional[Any] = None
+        self._full_embeddings_matrix: Optional[torch.Tensor] = None
+        self._full_job_ids: Optional[List[str]] = None
+        self._full_degree_codes: Optional[torch.Tensor] = None
 
-    def _load_real_dataset_jobs(self, target_sample_size: int = 5000) -> List[JobDescriptionModel]:
+    def _ensure_dataset_loaded(self):
         """
-        Dynamically loads real job descriptions from local SQLite store, 
-        or populates SQLite from raw CSV if database is unseeded.
+        Validates dataset existence and loads the 1.61M FP16 PyTorch vector matrix into memory.
+        Raises FileNotFoundError if dataset artifacts are missing (Strict Error Policy).
         """
-        if self._cached_dataset_jobs is not None:
-            return self._cached_dataset_jobs
-
-        # 1. Try loading from SQLite database first
-        jobs = fetch_all_jobs()
-        if jobs:
-            print(f"DEBUG: Successfully loaded {len(jobs)} jobs from local SQLite database.")
-            self._cached_dataset_jobs = jobs
-            return jobs
-
-        # 2. Seed SQLite database from CSV if empty
-        print(f"DEBUG: SQLite database empty. Initializing and parsing dataset from '{DATASET_CSV_PATH}'...")
-        jobs = []
-        if not os.path.exists(DATASET_CSV_PATH):
+        if not os.path.exists(EMBEDDINGS_FULL_PATH):
             raise FileNotFoundError(
-                f"Job database 'jobs.db' is empty and dataset CSV was not found at '{DATASET_CSV_PATH}'. "
-                "Please run 'python scripts/setup_data.py' and 'python scripts/ingest_qdrant.py' to initialize the database."
+                f"Full vector matrix not found at '{EMBEDDINGS_FULL_PATH}'. "
+                "Please run 'uv run python scripts/ingest_full_dataset.py' to generate the 1.61M vector database."
+            )
+        if not os.path.exists(META_FULL_PATH):
+            raise FileNotFoundError(
+                f"Dataset metadata not found at '{META_FULL_PATH}'. "
+                "Please run 'uv run python scripts/ingest_full_dataset.py' to generate dataset metadata."
+            )
+        if not os.path.exists(DB_PATH):
+            raise FileNotFoundError(
+                f"SQLite jobs database not found at '{DB_PATH}'. "
+                "Please run 'uv run python scripts/ingest_full_dataset.py' to initialize the database."
             )
 
-        try:
-            chunk_df = pd.read_csv(DATASET_CSV_PATH, nrows=150000)
-            step = max(1, len(chunk_df) // target_sample_size)
-            sampled_df = chunk_df.iloc[::step].reset_index(drop=True)
-
-            for idx, row in sampled_df.iterrows():
-                title = str(row.get('Job Title', '') or row.get('Role', 'Software Engineer')).strip()
-                company = str(row.get('Company', 'Tech Company')).strip()
-                location = str(row.get('location', 'Remote')).strip()
-                country = str(row.get('Country', 'Global')).strip()
-                desc = str(row.get('Job Description', '') or row.get('Responsibilities', '')).strip()
-                exp = str(row.get('Experience', 'Not specified')).strip()
-                qual = str(row.get('Qualifications', 'Degree in relevant field')).strip()
-                salary = str(row.get('Salary Range', 'Industry standard')).strip()
-                work_type = str(row.get('Work Type', 'Full-time')).strip()
-                
-                raw_skills = str(row.get('skills', ''))
-                skills_list = [s.strip() for s in raw_skills.split(',') if s.strip()]
-                job_id = str(row.get('Job Id', f"csv-{idx+1}"))
-
-                jobs.append(JobDescriptionModel(
-                    id=job_id,
-                    title=title,
-                    company=company,
-                    location=location,
-                    country=country,
-                    description=desc,
-                    skills=skills_list,
-                    experience=exp,
-                    qualifications=qual,
-                    salary_range=salary,
-                    work_type=work_type
-                ))
-
-            save_jobs(jobs)
-            self._cached_dataset_jobs = jobs
-            print(f"DEBUG: Successfully indexed and saved {len(jobs)} job postings into SQLite.")
-        except Exception as e:
-            print(f"ERROR reading job_descriptions.csv: {e}")
-            raise RuntimeError(f"Failed to parse and seed job database from '{DATASET_CSV_PATH}': {str(e)}") from e
-
-        return self._cached_dataset_jobs
-
-    def _get_dataset_embeddings(self, jobs: List[JobDescriptionModel]):
-        """
-        Pre-computes and caches vector embeddings on disk/memory for sub-millisecond ranking.
-        """
-        if self._cached_dataset_embeddings is not None and len(self._cached_dataset_embeddings) == len(jobs):
-            return self._cached_dataset_embeddings
-
-        if os.path.exists(EMBEDDINGS_CACHE_PATH):
-            try:
-                print(f"DEBUG: Loading pre-computed embeddings matrix from '{EMBEDDINGS_CACHE_PATH}'...")
-                self._cached_dataset_embeddings = torch.load(EMBEDDINGS_CACHE_PATH, weights_only=False)
-                if len(self._cached_dataset_embeddings) == len(jobs):
-                    return self._cached_dataset_embeddings
-            except Exception as e:
-                print(f"DEBUG: Cache load warning: {e}")
-
-        print(f"DEBUG: Pre-computing vector embeddings for {len(jobs)} dataset job descriptions...")
-        job_texts = [
-            f"Role: {j.title}. Qualifications: {j.qualifications}. Skills: {', '.join(j.skills)}. Description: {j.description[:300]}"
-            for j in jobs
-        ]
-        self._cached_dataset_embeddings = embedding_service.encode(job_texts, batch_size=64)
-        try:
-            torch.save(self._cached_dataset_embeddings, EMBEDDINGS_CACHE_PATH)
-            print(f"DEBUG: Saved embeddings cache matrix to '{EMBEDDINGS_CACHE_PATH}'.")
-        except Exception as e:
-            print(f"DEBUG: Could not save cache matrix: {e}")
-
-        return self._cached_dataset_embeddings
+        if self._full_embeddings_matrix is None:
+            print(f"DEBUG: Loading 1.61M FP16 PyTorch vector matrix from '{EMBEDDINGS_FULL_PATH}'...")
+            self._full_embeddings_matrix = torch.load(EMBEDDINGS_FULL_PATH, weights_only=False).to(torch.float32)
+            meta = torch.load(META_FULL_PATH, weights_only=False)
+            self._full_job_ids = meta["job_ids"]
+            self._full_degree_codes = meta["degree_codes"]
+            print(f"DEBUG: Loaded {len(self._full_job_ids):,} vector embeddings into memory successfully.")
 
     def search_jobs(
         self, 
@@ -129,60 +74,57 @@ class DataLayerService:
         strict_qualification: bool = True
     ) -> List[JobDescriptionModel]:
         """
-        Dynamically scans vector space using Section-Aware Weighted Vector Embedding Ranking.
-        If strict_qualification=True, filters jobs matching the candidate's educational degree.
+        Scans the entire 1.61M vector space using Section-Aware Weighted Vector Embedding Ranking.
+        Executes parallel PyTorch matrix operations and retrieves the top winning records from SQLite.
         """
+        self._ensure_dataset_loaded()
+
         headline_query = query_text[:400]
-        query_embs = embedding_service.encode([headline_query, query_text], batch_size=2)
-        query_headline_emb = query_embs[0]
-        query_full_emb = query_embs[1]
+        query_embs = embedding_service.encode([headline_query, query_text], batch_size=2, convert_to_tensor=True)
+        query_headline_emb = query_embs[0].to(torch.float32)
+        query_full_emb = query_embs[1].to(torch.float32)
 
-        dataset_jobs = self._load_real_dataset_jobs()
-        if not dataset_jobs:
-            raise RuntimeError("Job dataset is empty. Please verify database initialization.")
+        matrix = self._full_embeddings_matrix
+        job_ids = self._full_job_ids
+        degree_codes = self._full_degree_codes
 
-        # Filter candidate jobs by educational qualification if strict_qualification=True
-        candidate_jobs = dataset_jobs
-        candidate_indices = list(range(len(dataset_jobs)))
-
+        target_indices = None
         if strict_qualification and qualification:
             qual_lower = qualification.lower().strip()
-            filtered_pairs = []
+            target_code = 0
+            for group_name, keywords in DEGREE_GROUPS.items():
+                if any(k in qual_lower for k in keywords):
+                    target_code = DEGREE_CODE_MAP.get(group_name, 0)
+                    break
+            
+            if target_code > 0:
+                mask = (degree_codes == target_code)
+                target_indices = torch.nonzero(mask, as_tuple=True)[0]
+                if len(target_indices) == 0:
+                    raise ValueError(f"No job descriptions matching qualification '{qualification}' were found in the database.")
+                matrix = matrix[target_indices]
+                print(f"DEBUG: Degree Filter ACTIVE ('{qualification}'): Scanning {len(target_indices):,} matching jobs.")
 
-            for idx, job in enumerate(dataset_jobs):
-                job_qual_lower = (job.qualifications or "").lower() + " " + (job.description or "").lower() + " " + (job.title or "").lower()
-                
-                # Direct degree string match or degree group match
-                if qual_lower in job_qual_lower:
-                    filtered_pairs.append((idx, job))
-                else:
-                    # Match degree group keywords
-                    matched_group = False
-                    for group_name, keywords in DEGREE_GROUPS.items():
-                        if any(k in qual_lower for k in keywords):
-                            if any(k in job_qual_lower for k in keywords):
-                                matched_group = True
-                                break
-                    if matched_group:
-                        filtered_pairs.append((idx, job))
+        # Align tensor devices and dtypes for fast matrix multiplication
+        v_head = query_headline_emb.to(device=matrix.device, dtype=matrix.dtype)
+        v_full = query_full_emb.to(device=matrix.device, dtype=matrix.dtype)
 
-            if filtered_pairs:
-                candidate_indices = [idx for idx, _ in filtered_pairs]
-                candidate_jobs = [job for _, job in filtered_pairs]
-                print(f"DEBUG: Educational Qualification Filter ACTIVE ('{qualification}'): Retained {len(candidate_jobs)} matching jobs.")
-            else:
-                raise ValueError(f"No job descriptions matching qualification '{qualification}' were found in the database.")
-
-        dataset_embeddings = self._get_dataset_embeddings(dataset_jobs)
-        filtered_embeddings = dataset_embeddings[candidate_indices]
-
-        # Hybrid Section-Aware Weighting
-        sim_headline = util.cos_sim(query_headline_emb, filtered_embeddings)[0]
-        sim_full = util.cos_sim(query_full_emb, filtered_embeddings)[0]
-        
+        # Section-Aware Matrix Multiplication: 40% Headline + 60% Full Body
+        sim_headline = torch.matmul(matrix, v_head)
+        sim_full = torch.matmul(matrix, v_full)
         blended_sims = (0.40 * sim_headline) + (0.60 * sim_full)
-        
-        top_k_indices = torch.topk(blended_sims, k=min(limit, len(candidate_jobs))).indices.tolist()
-        return [candidate_jobs[i] for i in top_k_indices]
+
+        top_k_indices = torch.topk(blended_sims, k=min(limit, len(blended_sims))).indices.tolist()
+
+        if target_indices is not None:
+            winning_job_ids = [job_ids[target_indices[i].item()] for i in top_k_indices]
+        else:
+            winning_job_ids = [job_ids[i] for i in top_k_indices]
+
+        # High-speed indexed batch retrieval from SQLite
+        results = fetch_jobs_by_ids(winning_job_ids)
+        if not results:
+            raise RuntimeError(f"Failed to fetch matched job records from SQLite for IDs: {winning_job_ids[:5]}")
+        return results
 
 data_layer_service = DataLayerService()

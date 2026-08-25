@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 
 class SmartMatchRequest(BaseModel):
     resume_text: str = Field(..., description="The full text of the resume")
@@ -16,13 +16,22 @@ class SmartMatchResponse(BaseModel):
 class JobMatchResult(BaseModel):
     job_id: str
     job_title: str
+    role: Optional[str] = None
     company: str
     location: Optional[str] = None
     country: Optional[str] = None
-    experience: Optional[str] = None
+    experience: Optional[Union[int, str]] = None
     qualifications: Optional[str] = None
     salary_range: Optional[str] = None
     work_type: Optional[str] = None
+    skills: List[str] = Field(default_factory=list)
+    responsibilities: Optional[str] = None
+    description: Optional[str] = None
+    job_portal: Optional[str] = None
+    preference: Optional[str] = None
+    contact_person: Optional[str] = None
+    contact: Optional[str] = None
+    company_profile: Optional[Dict[str, Any]] = None
     match_details: SmartMatchResponse
 
 class MultiJobMatchResponse(BaseModel):

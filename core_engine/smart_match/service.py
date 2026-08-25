@@ -67,15 +67,22 @@ class SmartMatchService:
         
         results = []
         for job in top_jobs:
+            portal_str = f"Job Portal: {job.job_portal}\n" if job.job_portal else ""
+            resp_str = f"Responsibilities: {job.responsibilities}\n" if job.responsibilities else ""
+            exp_str = f"{job.experience} Years" if job.experience is not None else "Not specified"
+            
             full_jd_text = (
                 f"Title: {job.title}\n"
+                f"Role: {job.role or job.title}\n"
                 f"Company: {job.company}\n"
                 f"Location: {job.location}, {job.country}\n"
-                f"Experience Required: {job.experience}\n"
+                f"Experience Required: {exp_str}\n"
                 f"Qualifications: {job.qualifications}\n"
                 f"Salary Range: {job.salary_range}\n"
                 f"Work Type: {job.work_type}\n"
+                f"{portal_str}"
                 f"Required Skills: {', '.join(job.skills)}\n"
+                f"{resp_str}"
                 f"Description: {job.description}"
             )
             req = SmartMatchRequest(resume_text=resume_text, jd_text=full_jd_text)
@@ -84,6 +91,7 @@ class SmartMatchService:
             results.append(JobMatchResult(
                 job_id=job.id,
                 job_title=job.title,
+                role=job.role or job.title,
                 company=job.company,
                 location=job.location,
                 country=job.country,
@@ -91,6 +99,14 @@ class SmartMatchService:
                 qualifications=job.qualifications,
                 salary_range=job.salary_range,
                 work_type=job.work_type,
+                skills=job.skills,
+                responsibilities=job.responsibilities,
+                description=job.description,
+                job_portal=job.job_portal,
+                preference=job.preference,
+                contact_person=job.contact_person,
+                contact=job.contact,
+                company_profile=job.company_profile,
                 match_details=match_details
             ))
             

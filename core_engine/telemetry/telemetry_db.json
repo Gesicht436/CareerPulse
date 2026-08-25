@@ -8,13 +8,121 @@
     "enable_jd_analyzer": true
   },
   "metrics": {
-    "total_page_views": 147,
+    "total_page_views": 159,
     "total_resume_analyses": 34,
     "total_expert_sessions": 12,
     "total_job_searches": 45,
     "total_jd_evaluations": 19
   },
   "activity_logs": [
+    {
+      "id": "log_1787631926373",
+      "timestamp": "2026-08-25T04:25:26.373942+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787631820764",
+      "timestamp": "2026-08-25T04:23:40.764241+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787631660949",
+      "timestamp": "2026-08-25T04:21:00.949112+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787631329663",
+      "timestamp": "2026-08-25T04:15:29.663449+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787630829750",
+      "timestamp": "2026-08-25T04:07:09.750537+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787630704904",
+      "timestamp": "2026-08-25T04:05:04.904314+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787630421159",
+      "timestamp": "2026-08-25T04:00:21.159608+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787630205548",
+      "timestamp": "2026-08-25T03:56:45.548862+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787629371153",
+      "timestamp": "2026-08-25T03:42:51.153775+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787629166144",
+      "timestamp": "2026-08-25T03:39:26.144377+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787588713087",
+      "timestamp": "2026-08-24T16:25:13.087163+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
+    {
+      "id": "log_1787584224421",
+      "timestamp": "2026-08-24T15:10:24.421546+00:00",
+      "event_type": "PAGE_VIEW",
+      "description": "Page view recorded for /",
+      "metadata": {
+        "path": "/"
+      }
+    },
     {
       "id": "log_1787580077854",
       "timestamp": "2026-08-24T14:01:17.854057+00:00",

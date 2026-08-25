@@ -143,7 +143,7 @@ def generate_rag_diagram():
     fig, ax = setup_plot("Retrieval-Augmented Generation (RAG) Workflow", figsize=(12, 6))
     bw, bh = 0.18, 0.15
     add_box(ax, 0.02, 0.4, bw, bh, "Resume\nEmbedding", COLORS['primary'])
-    add_box(ax, 0.28, 0.4, bw, bh, "Vector DB\n(Qdrant)", COLORS['warning'])
+    add_box(ax, 0.28, 0.4, bw, bh, "PyTorch Vector\nMatrix (1.61M)", COLORS['warning'])
     add_box(ax, 0.54, 0.4, bw, bh, "Context\nEnrichment", COLORS['success'])
     add_box(ax, 0.80, 0.4, bw, bh, "Local LLM\n(Qwen 1.5B)", COLORS['danger'])
     add_arrow(ax, (0.20, 0.475), (0.28, 0.475), "Search", 'top')
@@ -284,8 +284,8 @@ def generate_setup_flow():
         "1. Environment\n(.env & uv sync)",
         "2. Dependencies\n(spaCy & Tesseract)",
         "3. Data Acquisition\n(setup_data.py)",
-        "4. Vector DB\n(docker-compose)",
-        "5. Ingestion\n(ingest_qdrant.py)",
+        "4. Preprocess\n(preprocess_dataset.py)",
+        "5. Ingestion\n(ingest_full_dataset.py)",
         "6. Launch\n(uv run uvicorn)"
     ]
     

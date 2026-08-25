@@ -12,11 +12,17 @@ wheels/
 # Environment variables
 .env
 
-# Data
-qdrant_data/
+# Large Datasets & Vectors
 **/raw/
 **/processed/
+**/embeddings/
+core_engine/datasets/processed/
+core_engine/datasets/embeddings/
+core_engine/datasets/jobs.db*
+*.pt
+*.zip
 
-# Node dependencies
+# Node dependencies & OS
 node_modules/
 .DS_Store
+Thumbs.db

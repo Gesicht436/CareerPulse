@@ -7,7 +7,7 @@ router = APIRouter()
 @router.post("/match-all", response_model=MultiJobMatchResponse)
 async def match_resume_to_all_jobs(resume_text: str, limit: int = 5):
     """
-    Takes a resume text and finds the most relevant jobs from the Qdrant database,
+    Takes a resume text and finds the most relevant jobs from the 1.61M jobs database,
     providing a detailed match report for each.
     """
     try:

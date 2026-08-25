@@ -13,17 +13,48 @@ DATASETS = [
 ]
 
 
+def setup_kaggle_auth():
+    """
+    Configures Kaggle credentials from environment variables or .env file.
+    Supports KAGGLE_USERNAME + KAGGLE_KEY, KAGGLE_API_TOKEN, or ~/.kaggle/kaggle.json.
+    """
+    token = os.getenv("KAGGLE_API_TOKEN")
+    if token:
+        token = token.strip().strip('"').strip("'")
+        if ":" in token and not token.startswith("{"):
+            parts = token.split(":", 1)
+            os.environ["KAGGLE_USERNAME"] = parts[0].strip()
+            os.environ["KAGGLE_KEY"] = parts[1].strip()
+        elif token.startswith("{"):
+            import json
+            try:
+                data = json.loads(token)
+                os.environ["KAGGLE_USERNAME"] = data.get("username", "")
+                os.environ["KAGGLE_KEY"] = data.get("key", "")
+            except Exception:
+                pass
+
+    username = os.getenv("KAGGLE_USERNAME")
+    key = os.getenv("KAGGLE_KEY")
+    kaggle_json_path = Path.home() / ".kaggle" / "kaggle.json"
+
+    if (not username or not key) and not kaggle_json_path.exists():
+        print("\n[ERROR] Kaggle credentials not found!")
+        print("Please provide your credentials in .env file using one of the following:")
+        print("  Option A:")
+        print("    KAGGLE_USERNAME=your_kaggle_username")
+        print("    KAGGLE_KEY=your_kaggle_api_key")
+        print("  Option B:")
+        print("    KAGGLE_API_TOKEN=your_username:your_api_key")
+        print("Or place your 'kaggle.json' inside ~/.kaggle/kaggle.json\n")
+        sys.exit(1)
+
+
 def download_data():
     """
     Downloads datasets from Kaggle using the Kaggle API.
     """
-    # 1. Check for API Token
-    # Kaggle library automatically picks up KAGGLE_API_TOKEN if set
-    token = os.getenv("KAGGLE_API_TOKEN")
-    if not token:
-        print("\n[ERROR] KAGGLE_API_TOKEN not found in environment variables.")
-        print("Please check your .env file or set the variable in your shell.\n")
-        sys.exit(1)
+    setup_kaggle_auth()
 
     # 2. Process each dataset
     for ref, target_dir in DATASETS:

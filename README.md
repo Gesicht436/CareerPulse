@@ -1,6 +1,6 @@
 # CareerPulse: AI-Powered Career Optimization & Semantic Job Matching
 
-**CareerPulse** is a modern, UX-first career intelligence platform that leverages local Large Language Models (LLMs), embedded vector search, high-fidelity document parsing, and real-time interaction systems to provide job seekers with deep, actionable insights into their professional alignment. Unlike traditional ATS systems that rely on rigid keyword matching, CareerPulse understands the **semantic context** of your experience, reconstructing complex resume layouts, identifying skill gaps, and generating personalized learning roadmaps alongside live 1-on-1 expert guidance, secure user accounts, and administrative site management controls.
+**CareerPulse** is a modern, UX-first career intelligence platform that leverages local Large Language Models (LLMs), embedded 1.61M vector search, high-fidelity document parsing, and real-time interaction systems to provide job seekers with deep, actionable insights into their professional alignment. Unlike traditional ATS systems that rely on rigid keyword matching, CareerPulse understands the **semantic context** of your experience across **1,615,940 real job postings**, reconstructing complex resume layouts, identifying skill gaps, and generating personalized learning roadmaps alongside live 1-on-1 expert guidance, secure user accounts, and administrative site management controls.
 
 ---
 
@@ -10,8 +10,8 @@ CareerPulse delivers seven foundational pillars:
 
 1. **User Authentication & Session Persistence**: Secure Sign-In and Sign-Up authentication powered by standard library `hashlib.pbkdf2_hmac` with SHA-256 (100,000 iterations, 16-byte random salts) and 7-day HMAC-SHA256 JWT tokens.
 2. **UX-First Telemetry & Admin Control Console**: Captures real-time candidate alignment telemetry, platform usage counters (Users, Resumes Parsed, WebRTC Calls, Job Searches, JD Evaluations), system hardware load (CPU %, RAM MB/%, Uptime via `psutil`), activity audit logs, live top announcement banner publishing, and instant feature flag toggles (`admin@careerpulse.ai`).
-3. **Semantic-First Alignment & Top 5 Recommendations**: Powered by **SBERT (Sentence-BERT)** (`all-MiniLM-L6-v2`, 384 dimensions) and Section-Aware Weighted Vector Search ($0.40 \times \text{Headline} + 0.60 \times \text{Body}$), the engine computes top 5 matched job recommendations across a 1.6M row job database with full job description inspection modals (`#job-inspect-modal`).
-4. **Educational Qualification Degree Filtering**: Extracts degree qualifications (`B.Tech`, `M.Tech`, `B.Sc`, `M.Sc`, `BCA`, `MCA`, `B.Com`, `MBA`, `Ph.D`) directly from resume text and enforces degree group filtering (`DEGREE_GROUPS`) with an interactive dashboard filter toggle button (**"Disable Qualification Filter"** / **"Enable Qualification Filter"**).
+3. **1.61M Single-Tier Vector Matrix & Top 5 Recommendations**: Powered by **SBERT (Sentence-BERT)** (`all-MiniLM-L6-v2`, 384 dimensions) and Section-Aware Weighted Vector Search ($0.40 \times \text{Headline} + 0.60 \times \text{Body}$), the engine scans **1,615,940 jobs** via an in-memory PyTorch FP16 matrix (`embeddings/dataset_embeddings_full.pt`, 1.24 GB) in **~200 ms**, with full job inspection modals (`#job-inspect-modal`).
+4. **Educational Qualification Degree Filtering**: Extracts degree qualifications (`B.Tech`, `M.Tech`, `B.Sc`, `M.Sc`, `BCA`, `MCA`, `B.Com`, `MBA`, `Ph.D`) directly from resume text and enforces GPU degree bitmask filtering (`DEGREE_GROUPS` / `DEGREE_CODE_MAP`) with an interactive dashboard filter toggle button (**"Disable Qualification Filter"** / **"Enable Qualification Filter"**).
 5. **High-Fidelity Document & OCR Intelligence**: Features a specialized PDF parsing engine that reconstructs multi-column spatial layouts (`pdfplumber` sorted by `top, x0`), extracts structured tables, harvests embedded hyperlinks/annotations (GitHub, LinkedIn, portfolios), normalizes line-wrap hyphens, and executes a 300 DPI dual-pass preprocessed OCR fallback (OpenCV CLAHE + Bilateral Filtering + Adaptive Thresholding + `pytesseract` `--psm 3`).
 6. **Local Quantized LLM Reasoning & Roadmaps**: Powered by local **Qwen 2.5** (1.5B/7B) with 4-bit NormalFloat4 (NF4) quantization via `bitsandbytes`, producing structured JSON justifications, skill gaps, actionable recommendations, and multi-week learning roadmaps.
 7. **1-on-1 WebRTC Live Mentorship Stage**: Native FastAPI WebSocket signaling hub (`/api/v1/expert/ws/{room_id}`) paired with browser `RTCPeerConnection` for real-time video/audio and live chat, featuring an automated **AI Expert Briefing Dossier** compiled for mentors.
@@ -26,7 +26,7 @@ The project is architected as a high-performance **Modular Monolith**, split bet
 
 - **API Framework**: FastAPI (Asynchronous Python 3.12)
 - **Authentication & Admin Control**: PBKDF2-HMAC-SHA256 password hashing, HMAC-SHA256 JWT tokens, Admin Router (`/api/v1/admin`)
-- **Persistence & Vector Store**: Zero-Docker Embedded SQLite (`jobs.db`) & PyTorch Pre-Computed Tensor Embeddings Matrix (`dataset_embeddings_cache.pt`, shape `(5000, 384)`)
+- **Persistence & Vector Store**: Zero-Docker Embedded SQLite (`jobs.db`, 1.78 GB in WAL mode) & In-Memory PyTorch FP16 Vector Matrix (`embeddings/dataset_embeddings_full.pt`, 1.24 GB, shape `(1615940, 384)`)
 - **Embedding Model**: `all-MiniLM-L6-v2` via `sentence-transformers` (384-dimensional semantic vectors)
 - **Local LLM**: Qwen 2.5 1.5B/7B (Quantized via `bitsandbytes` NF4 4-bit)
 - **Deep Learning Framework**: PyTorch with CUDA 13.0 GPU acceleration
@@ -44,7 +44,7 @@ The project is architected as a high-performance **Modular Monolith**, split bet
 
 - **Dependency Management**: `uv` (Fast Python package manager)
 - **Visualization**: `matplotlib`, `numpy` (Programmatic technical diagrams)
-- **Documentation**: `pandoc` / `pypandoc` (Cross-format conversion)
+- **Distribution**: One-click precomputed dataset downloader (`download_precomputed_data.py`) & artifact packager (`package_dataset.py`)
 
 ---
 
@@ -56,10 +56,11 @@ The project is architected as a high-performance **Modular Monolith**, split bet
 | **Admin Control** | Admin portal (`admin.html`), telemetry metrics, audit logs, feature flags | [x] Completed |
 | **Document Processing** | Multi-column layout reconstruction, Table & Hyperlink harvesting | [x] Completed |
 | **OCR Intelligence** | 300 DPI Dual-Pass Preprocessed OCR (CLAHE + Adaptive Thresholding) | [x] Completed |
-| **Data Layer** | Zero-Docker Embedded SQLite (`jobs.db`) & Cached PyTorch Tensor Matrix (`(5000, 384)`) | [x] Completed |
-| **Matching Engine** | Top 5 Job Recommendations, SBERT Section-Aware Scoring & Token-Aware Skill Matcher | [x] Completed |
+| **Data Layer** | Zero-Docker SQLite WAL (`jobs.db`, 1.78 GB) & 1.61M PyTorch Vector Matrix (`1.24 GB`) | [x] Completed |
+| **High-Speed Ingestion** | CUDA FP16 Batch Ingestion (~4,630 texts/sec, ~5.8 min for 1.61M rows) | [x] Completed |
+| **Matching Engine** | Top 5 Recommendations, SBERT Section-Aware Scoring & Token-Aware Skill Matcher | [x] Completed |
 | **Degree Filtering** | Automatic Degree Extraction (`B.Tech`, `B.Sc`, etc.) & Interactive Dashboard Filter Toggle | [x] Completed |
-| **Job Inspection** | Full Job Description Inspection Modal (`#job-inspect-modal`) & Action Links | [x] Completed |
+| **Job Inspection** | Full Job Description Inspection Modal (`#job-inspect-modal` with company dossiers) | [x] Completed |
 | **Intelligence** | Local LLM Integration (Qwen 2.5) with 4-bit quantization | [x] Completed |
 | **Expert System** | WebRTC 1-on-1 Peer-to-Peer Live Video & AI Briefing Dossier | [x] Completed |
 | **Web UI** | Responsive Dashboard, Upload Hub, Job Search, Admin Hub & Live Stage | [x] Completed |
@@ -76,7 +77,7 @@ CareerPulse/
 ├── PROJECT_CONTEXT.md              # Primary technical context & onboarding reference
 ├── README.md                       # Primary project overview & quickstart guide (this file)
 ├── USER_FEATURES.md                # Comprehensive user feature catalog
-├── pyproject.toml                  # Project dependencies & PyTorch CUDA 13.0 index configuration
+├── pyproject.toml                  # Project dependencies & PyTorch CUDA index configuration
 ├── uv.lock                         # Locked exact dependency tree
 │
 ├── core_engine/                    # Backend Central Nervous System
@@ -96,18 +97,23 @@ CareerPulse/
 │   │   ├── schemas.py              # User schemas (UserCreate, UserLogin, TokenResponse)
 │   │   ├── service.py              # PBKDF2 hashing, JWT signing, users_db.json CRUD
 │   │   └── users_db.json           # Persistent user store
-│   ├── data_layer/                 # Embedded SQLite Database & Vector Subsystem
+│   ├── data_layer/                 # Embedded SQLite Database & 1.61M Vector Subsystem
 │   │   ├── README.md               # Data layer documentation
 │   │   ├── __init__.py             # Package marker
-│   │   ├── database.py             # SQLite connection manager & queries
-│   │   ├── schemas.py              # JobDescriptionModel schema
-│   │   └── service.py              # DataLayerService, section-aware search & tensor cache
-│   ├── datasets/                   # Datasets & Cached Embeddings
+│   │   ├── database.py             # SQLite connection manager, 18-column schema in WAL mode
+│   │   ├── schemas.py              # JobDescriptionModel & CompanyProfileModel schemas
+│   │   └── service.py              # DataLayerService, 1.61M vector ranking & degree bitmasking
+│   ├── datasets/                   # Datasets & 1.61M Precomputed Embeddings
 │   │   ├── README.md               # Datasets documentation
-│   │   ├── jobs.db                 # Embedded SQLite job descriptions database
-│   │   ├── dataset_embeddings_cache.pt # 5,000 x 384 PyTorch tensor embeddings matrix
+│   │   ├── jobs.db                 # Embedded SQLite jobs database (1.78 GB, 1.61M rows)
+│   │   ├── embeddings/             # Automatically generated vector embeddings folder
+│   │   │   ├── dataset_embeddings_full.pt # (1615940, 384) PyTorch FP16 tensor matrix (1.24 GB)
+│   │   │   ├── dataset_meta_full.pt # Job IDs and Degree Bitmask Tensor (43 MB)
+│   │   │   └── cache_checkpoints/  # Intermediate chunk checkpointing folder
+│   │   ├── processed/              # Automatically generated processed data folder
+│   │   │   └── cleaned_job_descriptions.csv # Cleaned & normalized 1.61M dataset (1.39 GB)
 │   │   └── raw/
-│   │       └── job_descriptions.csv # 1.6M Kaggle job descriptions dataset
+│   │       └── job_descriptions.csv # Raw 1.6M Kaggle job descriptions dataset
 │   ├── expert_session/             # Live 1-on-1 WebRTC Expert System
 │   │   ├── README.md               # Expert session documentation
 │   │   ├── router.py               # WebSockets signaling router & REST endpoints
@@ -140,9 +146,12 @@ CareerPulse/
 ├── scripts/                        # Automation & Data Pipelines
 │   ├── README.md                   # Scripts documentation
 │   ├── __init__.py                 # Package marker
+│   ├── download_precomputed_data.py # One-click teammate dataset setup (< 60s)
 │   ├── generate_visuals.py         # Matplotlib system diagram & benchmark generator
-│   ├── ingest_qdrant.py            # Dataset populator & PyTorch tensor matrix generator
-│   ├── md_to_docs.py               # Pandoc Markdown to DOCX converter script
+│   ├── ingest_full_dataset.py      # High-throughput PyTorch CUDA FP16 vector compiler (~4,630 texts/sec)
+│   ├── inspect_dataset.py          # Interactive dataset explorer & CLI queries
+│   ├── package_dataset.py          # Artifact packaging bundle utility
+│   ├── preprocess_dataset.py       # Column pruning & experience normalization
 │   └── setup_data.py               # Kaggle dataset automated downloader
 │
 └── web_interface/                  # Modern Web Presentation Layer
@@ -229,4 +238,4 @@ uv run python quality_assurance/cuda_check.py
 
 ## Author & Developer
 
-- **Mayank Anand**: Creator & Lead Engineer — System Architecture, Local Quantized LLM Inference, Embedded Vector Search, Document & OCR Extraction Engine, Web Presentation Layer, Authentication Subsystem, and Real-Time Telemetry.
+- **Mayank Anand**: Creator & Lead Engineer — System Architecture, Local Quantized LLM Inference, 1.61M Embedded Vector Search, Document & OCR Extraction Engine, Web Presentation Layer, Authentication Subsystem, and Real-Time Telemetry.

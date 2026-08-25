@@ -60,5 +60,113 @@
     "salt": "5c5d54769a3d8a49dfdb720b5faf6ab4",
     "role": "user",
     "created_at": "2026-08-24T14:01:17.791755+00:00"
+  },
+  "usr_246f5ba73fb8e8e7": {
+    "id": "usr_246f5ba73fb8e8e7",
+    "full_name": "Test Candidate",
+    "email": "test_1787584224@example.com",
+    "password_hash": "f12ba932455c562d1505131173c49e5f2678caf11237a4b8f7fba72b8f5188ca",
+    "salt": "cccf8d8390f0a2e4573bed7f07fa3bdd",
+    "role": "user",
+    "created_at": "2026-08-24T15:10:24.363683+00:00"
+  },
+  "usr_12f5ed14fdaf90ac": {
+    "id": "usr_12f5ed14fdaf90ac",
+    "full_name": "Test Candidate",
+    "email": "test_1787588712@example.com",
+    "password_hash": "0c757bfcafebf838fcbf9639540c2995cc3cede265dabf831b8efb21dc66eb8d",
+    "salt": "9e4288d3fef24bd7c965114e7f894fb7",
+    "role": "user",
+    "created_at": "2026-08-24T16:25:13.011746+00:00"
+  },
+  "usr_67ac96fad8917eae": {
+    "id": "usr_67ac96fad8917eae",
+    "full_name": "Test Candidate",
+    "email": "test_1787629166@example.com",
+    "password_hash": "04641067a8332d15d15c54a87ab650d80a89cbcf3ae49f41163ab0e075c0cb8f",
+    "salt": "1391c001483b69651c565c85796a1dc9",
+    "role": "user",
+    "created_at": "2026-08-25T03:39:26.067099+00:00"
+  },
+  "usr_abafde584623a61d": {
+    "id": "usr_abafde584623a61d",
+    "full_name": "Test Candidate",
+    "email": "test_1787629371@example.com",
+    "password_hash": "42112c5f3649daef77c5825eff184038422247672aabe6437e3b6cc610f11861",
+    "salt": "2eed01076e497d4a86376f49e442479e",
+    "role": "user",
+    "created_at": "2026-08-25T03:42:51.075956+00:00"
+  },
+  "usr_66bac0c7bb61098d": {
+    "id": "usr_66bac0c7bb61098d",
+    "full_name": "Test Candidate",
+    "email": "test_1787630205@example.com",
+    "password_hash": "fd4076d92d734d49a49792e5872be6d711bb59c0063469e795f58e7b1a16a22b",
+    "salt": "ea0a417b47f772e166fa2f3f5fe9b519",
+    "role": "user",
+    "created_at": "2026-08-25T03:56:45.481896+00:00"
+  },
+  "usr_3ec29361fdcd7527": {
+    "id": "usr_3ec29361fdcd7527",
+    "full_name": "Test Candidate",
+    "email": "test_1787630421@example.com",
+    "password_hash": "e710b9612030a83ef356a3d88c00425d0de44d3f31c99b84e1492284152c76d8",
+    "salt": "afa0080f2f7cea1ed6c7ffd2869cb349",
+    "role": "user",
+    "created_at": "2026-08-25T04:00:21.097020+00:00"
+  },
+  "usr_dccd3cb801c2f0ff": {
+    "id": "usr_dccd3cb801c2f0ff",
+    "full_name": "Test Candidate",
+    "email": "test_1787630704@example.com",
+    "password_hash": "56ab3e9c5609ca22b8078e19d39d16a503e7f677a7788551bf8e2dc9f7f5f73c",
+    "salt": "e9253aa8abf76fccee40a520beb8f076",
+    "role": "user",
+    "created_at": "2026-08-25T04:05:04.842715+00:00"
+  },
+  "usr_2d014c920ef6fcb7": {
+    "id": "usr_2d014c920ef6fcb7",
+    "full_name": "Test Candidate",
+    "email": "test_1787630829@example.com",
+    "password_hash": "575e12da206f845e9b20192d9f1f2d9b3cc9309d270d3dd0469a55d7d439aff9",
+    "salt": "4a65073f00db2e36ff88cce738fc3634",
+    "role": "user",
+    "created_at": "2026-08-25T04:07:09.669267+00:00"
+  },
+  "usr_d78eacb2c426372d": {
+    "id": "usr_d78eacb2c426372d",
+    "full_name": "Test Candidate",
+    "email": "test_1787631329@example.com",
+    "password_hash": "699ae91c7a4755f64e53e00ed8772569fa6521c18a4ed9640f68fffe089950a0",
+    "salt": "25c245e9241c77686a08f1a242af47e9",
+    "role": "user",
+    "created_at": "2026-08-25T04:15:29.599573+00:00"
+  },
+  "usr_66497b5cfb54f040": {
+    "id": "usr_66497b5cfb54f040",
+    "full_name": "Test Candidate",
+    "email": "test_1787631660@example.com",
+    "password_hash": "8647651bfadabfe6e6fdf61be2cbb4c70a649c484dfee9415f789624c45f8cb7",
+    "salt": "3b0b8233e54b60f5ba77199a3a9e3eba",
+    "role": "user",
+    "created_at": "2026-08-25T04:21:00.885747+00:00"
+  },
+  "usr_198c5c166860519c": {
+    "id": "usr_198c5c166860519c",
+    "full_name": "Test Candidate",
+    "email": "test_1787631820@example.com",
+    "password_hash": "711841769b2218481caa1cd4a2baa8298186e546777f7efca11110249c8d424c",
+    "salt": "3e338eb36d1f05398b2a3d5285eca24c",
+    "role": "user",
+    "created_at": "2026-08-25T04:23:40.698315+00:00"
+  },
+  "usr_90e816faf942bc23": {
+    "id": "usr_90e816faf942bc23",
+    "full_name": "Test Candidate",
+    "email": "test_1787631926@example.com",
+    "password_hash": "abcc46509bfb21782f251541729084b9dd4d3bbcd602144ea6a9df6670c11376",
+    "salt": "32b43dd13b7e39823e3c3529dd04a0bf",
+    "role": "user",
+    "created_at": "2026-08-25T04:25:26.306092+00:00"
   }
 }
